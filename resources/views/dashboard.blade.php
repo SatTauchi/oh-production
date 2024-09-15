@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchFishTypes() {
-    fetch('https://bluebat2024.sakura.ne.jp/apianalysis/fish-types')
+    fetch('https://bluebat2024.sakura.ne.jp/api/analysis/fish-types')
         .then(response => response.json())
         .then(fishTypes => {
             const select = document.getElementById('fish-select');
