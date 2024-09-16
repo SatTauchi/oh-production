@@ -78,7 +78,7 @@
 const API_BASE_URL = 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch';
 
     function fetchFishTypes() {
-        fetch('${API_BASE_URL}/api/analysis/fish-types')
+        fetch(`${API_BASE_URL}/api/analysis/fish-types`)
             .then(response => response.json())
             .then(fishTypes => {
                 const selects = document.querySelectorAll('.fish-select');

@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchFishTypes() {
-    fetch('${API_BASE_URL}/api/analysis/fish-types')
+    fetch(`${API_BASE_URL}/api/analysis/fish-types`)
         .then(response => response.json())
         .then(fishTypes => {
             const select = document.getElementById('fish-select');
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadFishData(fishName) {
-        fetch('${API_BASE_URL}/api/analysis/fish-average-prices?fish=' + fishName)
+        fetch(`${API_BASE_URL}/api/analysis/fish-average-prices?fish=` + fishName)
             .then(response => response.json())
             .then(data => {
                 if (data.length === 0) {
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function drawPieChart() {
-        fetch('${API_BASE_URL}/api/fish-purchase-total')
+        fetch(`${API_BASE_URL}/api/fish-purchase-total`)
             .then(response => response.json())
             .then(data => {
                 const ctx = document.getElementById('pie-chart').getContext('2d');
@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchRecentData() {
-    fetch('${API_BASE_URL}/api/fish-data?fish=')
+    fetch(`${API_BASE_URL}/api/fish-data?fish=`)
         .then(response => response.json())
         .then(data => {
             let output = '';
@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchRecentComments() {
-        fetch('${API_BASE_URL}/api/recent-comments')
+        fetch(`${API_BASE_URL}/api/recent-comments`)
             .then(response => response.json())
             .then(comments => {
                 const commentsList = document.getElementById('recent-comments');
