@@ -130,6 +130,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
+const API_BASE_URL = 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch';
+
 document.addEventListener('DOMContentLoaded', function() {
     let priceChart, piechart;
     const colorMap = {
@@ -287,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchFishTypes() {
-    fetch('https://bluebat2024.sakura.ne.jp/Osakana_Howmuch/api/analysis/fish-types')
+    fetch('${API_BASE_URL}/api/analysis/fish-types')
         .then(response => response.json())
         .then(fishTypes => {
             const select = document.getElementById('fish-select');
@@ -336,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadFishData(fishName) {
-        fetch('/api/analysis/fish-average-prices?fish=' + fishName)
+        fetch('${API_BASE_URL}/api/analysis/fish-average-prices?fish=' + fishName)
             .then(response => response.json())
             .then(data => {
                 if (data.length === 0) {
@@ -355,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function drawPieChart() {
-        fetch('/api/fish-purchase-total')
+        fetch('${API_BASE_URL}/api/fish-purchase-total')
             .then(response => response.json())
             .then(data => {
                 const ctx = document.getElementById('pie-chart').getContext('2d');
@@ -443,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchRecentData() {
-    fetch('/api/fish-data?fish=')
+    fetch('${API_BASE_URL}/api/fish-data?fish=')
         .then(response => response.json())
         .then(data => {
             let output = '';
@@ -489,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchRecentComments() {
-        fetch('/api/recent-comments')
+        fetch('${API_BASE_URL}/api/recent-comments')
             .then(response => response.json())
             .then(comments => {
                 const commentsList = document.getElementById('recent-comments');

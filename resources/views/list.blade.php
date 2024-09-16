@@ -27,6 +27,8 @@
 
 @section('additional_scripts')
 <script>
+    const API_BASE_URL = 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch';
+    
     document.addEventListener('DOMContentLoaded', function() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         if (!csrfToken) {
@@ -36,7 +38,7 @@
         document.getElementById('fetch-data').addEventListener('click', function() {
             const selectedFish = document.getElementById('fish-select').value;
             if (selectedFish !== "") {
-                fetch(`/api/fish-data?fish=${selectedFish === "all" ? "" : selectedFish}`)
+                fetch(`${API_BASE_URL}/api/fish-data?fish=${selectedFish === "all" ? "" : selectedFish}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {

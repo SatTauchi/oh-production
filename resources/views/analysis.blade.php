@@ -75,8 +75,10 @@
 @section('additional_scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+const API_BASE_URL = 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch';
+
     function fetchFishTypes() {
-        fetch('/api/analysis/fish-types')
+        fetch('${API_BASE_URL}/api/analysis/fish-types')
             .then(response => response.json())
             .then(fishTypes => {
                 const selects = document.querySelectorAll('.fish-select');
@@ -96,7 +98,7 @@
         document.getElementById(selectId).addEventListener('change', function() {
             const selectedFish = this.value;
             if (selectedFish !== "") {
-                fetch(`/api/analysis/fish-prices?fish=${selectedFish === "all" ? "" : selectedFish}`)
+                fetch(`${API_BASE_URL}/api/analysis/fish-prices?fish=${selectedFish === "all" ? "" : selectedFish}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.length === 0) {
