@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 if (id) {
-                    window.location.href = `/data-update/${id}`;
+                    window.location.href = `${API_BASE_URL}/data-update/${id}`;
                 } else {
                     console.error('data-id attribute is missing for update button');
                 }
