@@ -26,8 +26,9 @@
 @endsection
 
 @section('additional_scripts')
+<script>window.apiBaseUrl = "{{ config('app.api_base_url') }}";</script>
 <script>
-    const API_BASE_URL = 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch';
+    const API_BASE_URL = window.apiBaseUrl;
     
     document.addEventListener('DOMContentLoaded', function() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');

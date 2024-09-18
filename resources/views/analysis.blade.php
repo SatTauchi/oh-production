@@ -7,7 +7,7 @@
     .dashboard-card {
         width: 100%;
         height: 400px;
-        min-width: 300px;
+        min-width: auto;
         min-height: 300px;
     }
     .chart-container {
@@ -74,8 +74,9 @@
 
 @section('additional_scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>window.apiBaseUrl = "{{ config('app.api_base_url') }}";</script>
 <script>
-const API_BASE_URL = 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch';
+const API_BASE_URL = window.apiBaseUrl;
 
     function fetchFishTypes() {
         fetch(`${API_BASE_URL}/api/analysis/fish-types`)

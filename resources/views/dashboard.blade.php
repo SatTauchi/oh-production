@@ -129,9 +129,9 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script>window.apiBaseUrl = "{{ config('app.api_base_url') }}";</script>
 <script>
-const API_BASE_URL = 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch';
-
+const API_BASE_URL = window.apiBaseUrl;
 document.addEventListener('DOMContentLoaded', function() {
     let priceChart, piechart;
     const colorMap = {
@@ -183,13 +183,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 },
                 grid: {
-                    color: 'rgba(0, 0, 0, 0.05)'
+                    display: false
                 },
                 ticks: {
                     font: {
                         family: "'Helvetica Neue', 'Arial', sans-serif",
                         size: 11
-                    }
+                    }  
                 },
                 title: {
                     display: true,
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
         priceChart.data.labels = formattedDates;
         priceChart.data.datasets = [
             {
-                label: `${fishName}の平均仕入価格 (円/kg)`,
+                label: `${fishName}の平均仕入価格`,
                 data: prices,
                 borderColor: colorMap[fishName] || getRandomColor(),
                 backgroundColor: `${colorMap[fishName]}33` || getRandomColor(0.1),
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 yAxisID: 'y-axis-1'
             },
             {
-                label: `${fishName}の平均販売価格 (円/kg)`,
+                label: `${fishName}の平均販売価格`,
                 data: sellingPrices,
                 borderColor: adjustColor(colorMap[fishName] || getRandomColor(), -30),
                 backgroundColor: adjustColor(colorMap[fishName] || getRandomColor(0.1), -30),
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 yAxisID: 'y-axis-1'
             },
             {
-                label: `${fishName}の利益額 (円)`,
+                label: `${fishName}の利益額`,
                 data: profit,
                 type: 'bar',
                 backgroundColor: adjustColor(colorMap[fishName] || getRandomColor(), 30, 0.7),
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchFishTypes() {
-    fetch(`${API_BASE_URL}/api/analysis/fish-types`)
+    fetch(`/api/analysis/fish-types`)
         .then(response => response.json())
         .then(fishTypes => {
             const select = document.getElementById('fish-select');
@@ -407,12 +407,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             },
                             legend: {
                                 display: true,
-                                position: 'right',
+                                position: 'bottom',
                                 labels: {
                                     boxWidth: 12,
-                                    padding: 10,
+                                    padding: 20,
                                     font: {
-                                        size: 10
+                                        size: 11
                                     }
                                 }
                             },

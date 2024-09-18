@@ -61,6 +61,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | API Base URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used as the base for all API requests in the application.
+    | It can be set differently for different environments using the .env file.
+    |
+    */
+
+    'api_base_url' => env('API_BASE_URL', 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch'),
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
