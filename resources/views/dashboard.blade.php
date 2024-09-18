@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
         priceChart.data.labels = formattedDates;
         priceChart.data.datasets = [
             {
-                label: `${fishName}の平均仕入価格`,
+                label: `${fishName}の仕入価格`,
                 data: prices,
                 borderColor: colorMap[fishName] || getRandomColor(),
                 backgroundColor: `${colorMap[fishName]}33` || getRandomColor(0.1),
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 yAxisID: 'y-axis-1'
             },
             {
-                label: `${fishName}の平均販売価格`,
+                label: `${fishName}の販売価格`,
                 data: sellingPrices,
                 borderColor: adjustColor(colorMap[fishName] || getRandomColor(), -30),
                 backgroundColor: adjustColor(colorMap[fishName] || getRandomColor(0.1), -30),
@@ -357,92 +357,104 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function drawPieChart() {
-        fetch(`${API_BASE_URL}/api/fish-purchase-total`)
-            .then(response => response.json())
-            .then(data => {
-                const ctx = document.getElementById('pie-chart').getContext('2d');
-                if (piechart) {
-                    piechart.destroy();
-                }
-                
-                // データの合計を計算
-                const sum = data.data.reduce((acc, val) => acc + parseFloat(val), 0);
-                
-                piechart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: data.labels,
-                        datasets: [{
-                            data: data.data,
-                            backgroundColor: data.labels.map(label => colorMap[label] || getRandomColor()),
-                            borderColor: 'white',
-                            borderWidth: 2
-                        }]
+    fetch(`${API_BASE_URL}/api/fish-purchase-total`)
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('pie-chart').getContext('2d');
+            if (piechart) {
+                piechart.destroy();
+            }
+            
+            // データの合計を計算
+            const sum = data.data.reduce((acc, val) => acc + parseFloat(val), 0);
+            
+            // データを金額でソートし、上位2つを特定
+            const sortedIndices = data.data
+                .map((value, index) => ({ value: parseFloat(value), index }))
+                .sort((a, b) => b.value - a.value)
+                .map(item => item.index);
+            const top2Indices = new Set(sortedIndices.slice(0, 2));
+
+            piechart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: data.labels.map(label => colorMap[label] || getRandomColor()),
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                plugins: [ChartDataLabels],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 10,
+                            top: 0,
+                            bottom: 0
+                        }
                     },
-                    plugins: [ChartDataLabels],
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                left: 10,
-                                right: 10,
-                                top: 0,
-                                bottom: 0
-                            }
-                        },
-                        plugins: {
-                            datalabels: {
-                                color: '#fff',
-                                font: {
-                                    weight: 'bold',
-                                    size: 16
-                                },
-                                formatter: (value, ctx) => {
-                                    const datapoint = ctx.chart.data.datasets[0].data[ctx.dataIndex];
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            font: {
+                                weight: 'bold',
+                                size: 16
+                            },
+                            formatter: (value, ctx) => {
+                                const index = ctx.dataIndex;
+                                if (top2Indices.has(index)) {
+                                    const datapoint = ctx.chart.data.datasets[0].data[index];
                                     const percentage = ((parseFloat(datapoint) / sum) * 100).toFixed(1) + "%";
                                     return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(datapoint) + '\n' + percentage;
-                                },
-                                textAlign: 'center'
-                            },
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    boxWidth: 12,
-                                    padding: 20,
-                                    font: {
-                                        size: 11
-                                    }
+                                } else {
+                                    return null; // TOP2以外は何も表示しない
                                 }
                             },
-                            title: {
-                                display: false,
-                                text: '魚種別仕入れ総額',
+                            textAlign: 'center'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 20,
                                 font: {
-                                    size: 16,
-                                    weight: 'bold'
+                                    size: 11
                                 }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed !== null) {
-                                            label += new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(context.parsed);
-                                        }
-                                        return label;
+                            }
+                        },
+                        title: {
+                            display: false,
+                            text: '魚種別仕入れ総額',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
                                     }
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(context.parsed);
+                                    }
+                                    return label;
                                 }
                             }
                         }
                     }
-                });
+                }
             });
-    }
+        });
+}
 
     function fetchRecentData() {
     fetch(`${API_BASE_URL}/api/fish-data?fish=`)
