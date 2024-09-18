@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'api_base_url' => env('API_BASE_URL', 'https://bluebat2024.sakura.ne.jp/Osakana_Howmuch'),
+    'api_base_url' => env('API_BASE_URL'),
 
 
     /*

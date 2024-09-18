@@ -26,6 +26,7 @@
     .fish-select-container {
         width: 200px;
     }
+
     .fish-select {
         width: 100%;
         padding: 0.5rem;
@@ -35,14 +36,39 @@
         border-radius: 9999px;
         transition: all 0.3s;
         background-color: white;
+        font-size: 16px; /* デフォルトのフォントサイズ */
     }
+
     .fish-select:hover {
         background-color: #3490dc;
         color: white;
     }
+
     .fish-select:focus {
         outline: none;
         box-shadow: 0 0 0 3px rgba(52, 144, 220, 0.5);
+    }
+    /* レスポンシブデザインの追加 */
+    @media (max-width: 768px) {
+        .fish-select-container {
+            width: 150px;
+        }
+
+        .fish-select {
+            padding: 0.3rem;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .fish-select-container {
+            width: 120px;
+        }
+
+        .fish-select {
+            padding: 0.2rem;
+            font-size: 12px;
+        }
     }
     .data-card {
         display: flex;
@@ -73,11 +99,12 @@
 @section('content')
 <div class="container mx-auto px-4">
     <div class="bg-white rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl mb-8">
-        <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-blue-500 after:rounded-full">ダッシュボード</h2>
+        <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute 
+        after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-blue-500 after:rounded-full">ダッシュボード　（魚芳　中野支部）</h2>
         <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
             <div class="dashboard-card-pricetrend bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-primary">価格推移</h3>
+                    <h3 class="text-xl font-bold text-primary">自社の価格推移</h3>
                     <div class="fish-select-container">
                         <select id="fish-select" class="fish-select"></select>
                     </div>
@@ -90,13 +117,13 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div class="dashboard-card bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl flex flex-col">
-                <h3 class="text-xl font-bold mb-4 text-primary">仕入割合</h3>
+                <h3 class="text-xl font-bold mb-4 text-primary">自社の仕入割合</h3>
                 <div class="chart-container flex-grow relative w-full" style="height: 300px;">
                     <canvas id="pie-chart" class="w-full h-full"></canvas>
                 </div>
             </div>
             <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                <h3 class="text-xl font-bold mb-4 text-primary">最新のコメント</h3>
+                <h3 class="text-xl font-bold mb-4 text-primary">中野支部　価格情報</h3>
                 <ul class="space-y-4" id="recent-comments">
                     <!-- 新着コメントがここに動的に挿入されます -->
                     <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
