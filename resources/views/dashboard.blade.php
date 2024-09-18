@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchFishTypes() {
-    fetch(`/api/analysis/fish-types`)
+    fetch(`${API_BASE_URL}/api/analysis/fish-types`)
         .then(response => response.json())
         .then(fishTypes => {
             const select = document.getElementById('fish-select');
