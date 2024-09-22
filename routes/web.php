@@ -10,7 +10,9 @@ use App\Http\Controllers\FishPriceController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\FishPriceTrendController;
 use App\Http\Controllers\CsvImportController;  // 追加 CSVインポート用コントローラー
+use App\Http\Controllers\LineBotController; // 追加
 
+Route::post('webhook/linebot', [LineBotController::class, 'reply']);
 
 Route::middleware(['auth'])->group(function () {
 

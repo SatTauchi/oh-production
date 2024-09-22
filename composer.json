@@ -13,7 +13,8 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "league/csv": "^9.16"
+        "league/csv": "^9.16",
+        "linecorp/line-bot-sdk": "^9.11"
     },
     "require-dev": {
         "askdkc/breezejp": "^1.8",

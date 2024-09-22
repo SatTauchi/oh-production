@@ -10,7 +10,9 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\LineLoginController; // 追加
+use App\Http\Controllers\LineBotController; // 追加
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/test-callback', function () {
     return 'Callback route is working!';
@@ -43,7 +45,7 @@ Route::middleware('guest')->group(function () {
     // LINEログイン用のルートを追加
     Route::get('/linelogin', [LineLoginController::class, 'lineLogin'])->name('linelogin');
     Route::get('/callback', [LineLoginController::class, 'callback'])->name('callback');
-    
+
 });
 
 Route::middleware('auth')->group(function () {
