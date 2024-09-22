@@ -41,6 +41,9 @@
             @endif
         </div>
     </form> 
+
+    <a href="{{route('linelogin')}}">LINEログイン</a>
+    
     <div class="flex items-center justify-center mt-4">
         <p class="text-sm">はじめての方はこちら</p>
         <a class="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 rounded-md 

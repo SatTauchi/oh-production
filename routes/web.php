@@ -11,10 +11,11 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\FishPriceTrendController;
 use App\Http\Controllers\CsvImportController;  // 追加 CSVインポート用コントローラー
 
-Route::get('/', [BookController::class,'index'])->middleware(['auth'])->name('dashboard');
-Route::get('/dashboard', [BookController::class,'index'])->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/', [BookController::class,'index'])->middleware(['auth'])->name('dashboard');
+    Route::get('/dashboard', [BookController::class,'index'])->middleware(['auth'])->name('dashboard');
     
     // 入力画面
     Route::get('/input', [FishPriceController::class, 'create'])->name('fish_price.create');
