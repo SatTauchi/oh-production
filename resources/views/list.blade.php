@@ -3,8 +3,8 @@
 @section('title', 'おさかなハぅマっチ？ - データ一覧')
 
 @section('content')
-<div class="container mx-auto px-4">
-    <div class="bg-white rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl mb-8">
+<!--<div class="container mx-auto px-4">-->
+    <!--<div class="bg-white rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl mb-8">-->
         <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-secondary after:rounded-full">データ一覧</h2>
         <div id="button02" class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
             <select id="fish-select" class="w-full sm:w-auto sm:min-w-[200px] px-4 py-2 border-2 border-primary text-primary font-bold rounded-full transition duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">

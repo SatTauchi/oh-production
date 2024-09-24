@@ -32,7 +32,10 @@ class LineBotController extends Controller
 
         $hash = hash_hmac('sha256', $httpRequestBody, $channelSecret, true);
         $signature = base64_encode($hash);
-        if ($signature !== $request->header('X-Line-Signature')) return;
+        if ($signature !== $request->header('X-Line-Signature')) {
+            Log::error('Signature verification failed');
+            return;
+        }
 
         $client = new Client();
         $config = new Configuration();
@@ -56,24 +59,40 @@ class LineBotController extends Controller
                 
                 $source = $event->getSource();
                 $userId = null;
+                $displayName = null;
 
                 if ($source instanceof UserSource) {
                     $userId = $source->getUserId();
+                    // ユーザーの場合のみプロフィールを取得
+                    try {
+                        $profile = $messagingApi->getProfile($userId);
+                        $displayName = $profile->getDisplayName();
+                    } catch (ApiException $e) {
+                        Log::error('Error retrieving profile from LINE API: ' . $e->getMessage());
+                        $displayName = 'Unknown User';
+                    }
                 } elseif ($source instanceof GroupSource) {
                     $userId = $source->getGroupId();
+                    $displayName = 'Group User';
                 } elseif ($source instanceof RoomSource) {
                     $userId = $source->getRoomId();
+                    $displayName = 'Room User';
                 }
 
                 if (!$userId) {
                     throw new Exception("Unable to get user/group/room ID from the event source.");
                 }
 
-                // ユーザー情報を取得
-                $user = User::where('line_id', $userId)->first();
-                if (!$user) {
-                    throw new Exception("User not found for LINE ID: $userId");
-                }
+                // ユーザー情報を取得、なければ新規作成
+                $user = User::firstOrCreate(
+                    ['line_id' => $userId],
+                    [
+                        'provider' => 'line',
+                        'name' => $displayName,
+                        'email' => null,
+                        'password' => null,
+                    ]
+                );
 
                 // メッセージを処理してデータベースに保存
                 $responseMessage = $this->processMessageAndSaveToDatabase($user, $eventMessageText);
@@ -107,7 +126,6 @@ class LineBotController extends Controller
             return response('Error', 500);
         }
     }
-
     private function processMessageAndSaveToDatabase(User $user, string $message)
     {
         $parts = explode(',', $message);

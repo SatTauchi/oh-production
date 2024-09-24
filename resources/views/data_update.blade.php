@@ -3,11 +3,11 @@
 @section('title', 'おさかなハぅマっチ？ - データ更新')
 
 @section('content')
-<div class="container mx-auto px-4">
+<!--<div class="container mx-auto px-4">-->
     <!-- フラッシュメッセージ表示領域 -->
     <div id="flash-message" class="hidden mb-4 p-4 rounded-lg"></div>
 
-    <div class="bg-gray-300 rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl mb-8">
+    <!--<div class="bg-gray-300 rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl mb-8">-->
         <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-secondary after:rounded-full">データ更新</h2>
         <form id="fishPriceForm" action="{{ route('fish_price.update', $result['id']) }}" method="post" enctype="multipart/form-data">
             @csrf

@@ -14,8 +14,8 @@
 @endsection
 
 @section('content')
-<div class="container mx-auto px-4">
-    <div class="bg-white rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+<!--<div class="container mx-auto px-4">-->
+    <!--<div class="bg-white rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">-->
         <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-secondary after:rounded-full">データ入力</h2>
         {{-- <!-- ダミーアップロードボタン -->
         <button class="w-2/12 bg-gradient-to-r from-primary to-primary-dark text-white font-bold py-3 px-4 rounded-lg transition duration-300 hover:opacity-80 hover:-translate-y-1 transform">CSVアップロード</button>

@@ -5,8 +5,8 @@
 @section('title', 'プロフィール編集 - おさかなハぅマっチ？')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="bg-card-background rounded-3xl shadow-lg p-7 mb-7 transition-all duration-300 hover:shadow-xl">
+<!--<div class="container mx-auto px-4 py-8">-->
+    <!--<div class="bg-card-background rounded-3xl shadow-lg p-7 mb-7 transition-all duration-300 hover:shadow-xl">-->
         <h2 class="text-2xl font-bold mb-6 text-primary relative pb-2.5 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-0.75 after:bg-secondary after:rounded">
             プロフィール情報
         </h2>
@@ -41,7 +41,7 @@
         </form>
     </div>
 
-    <div class="bg-card-background rounded-3xl shadow-lg p-7 mb-7 transition-all duration-300 hover:shadow-xl">
+    <!--<div class="bg-card-background rounded-3xl shadow-lg p-7 mb-7 transition-all duration-300 hover:shadow-xl">-->
         <h2 class="text-2xl font-bold mb-6 text-primary relative pb-2.5 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-0.75 after:bg-secondary after:rounded">
             パスワード変更
         </h2>
