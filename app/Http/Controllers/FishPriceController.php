@@ -32,8 +32,8 @@ class FishPriceController extends Controller
             'date' => 'required|date',
             'fish' => 'required|string',
             'place' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'selling_price' => 'nullable|numeric|min:0',
+            'price' => 'required|integer|min:0',  // price を int に変更
+            'selling_price' => 'nullable|integer|min:0',  // selling_price も int に変更
             'quantity_sold' => 'nullable|integer|min:0',
             'remarks' => 'nullable|string|max:200',
             'imgFile' => 'nullable|image|max:2048',
@@ -70,7 +70,7 @@ class FishPriceController extends Controller
                 'date' => Carbon::parse($item->date)->format('Y-m-d'),
                 'fish' => $item->fish,
                 'place' => $item->place,
-                'price' => intval($item->price),
+                'price' => intval($item->price),  // price を int として扱う
                 'selling_price' => $item->selling_price ? intval($item->selling_price) : null,
                 'quantity_sold' => $item->quantity_sold ? intval($item->quantity_sold) : null,
                 'remarks' => $item->remarks,
@@ -109,7 +109,7 @@ class FishPriceController extends Controller
             'date' => Carbon::parse($fishPrice->date)->format('Y-m-d'),
             'fish' => $fishPrice->fish,
             'place' => $fishPrice->place,
-            'price' => $fishPrice->price,
+            'price' => intval($fishPrice->price),  // price を int として扱う
             'selling_price' => $fishPrice->selling_price,
             'quantity_sold' => $fishPrice->quantity_sold,
             'remarks' => $fishPrice->remarks,
@@ -128,8 +128,8 @@ class FishPriceController extends Controller
             'date' => 'required|date',
             'fish' => 'required|string',
             'place' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'selling_price' => 'nullable|numeric|min:0',
+            'price' => 'required|integer|min:0',  // price を int に変更
+            'selling_price' => 'nullable|integer|min:0',  // selling_price も int に変更
             'quantity_sold' => 'nullable|integer|min:0',
             'remarks' => 'nullable|string|max:200',
             'imgFile' => 'nullable|image|max:2048',
@@ -148,7 +148,7 @@ class FishPriceController extends Controller
         flash()->success('データが正常に保存されました。');
         return redirect()->route('data.list');
     }
-    
+
     public function softDelete(Request $request)
     {
         $id = $request->input('id');
@@ -161,6 +161,5 @@ class FishPriceController extends Controller
         flash()->success('データが正常に削除されました。');
         
         return response()->json(['success' => true]);
-        
     }
 }
