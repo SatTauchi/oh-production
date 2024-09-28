@@ -48,7 +48,7 @@
                 </select>
             </div>
             <div>
-                <label for="price" class="block mb-2 font-bold">仕入価格 (円/kg) *</label>
+                <label for="price" class="block mb-2 font-bold">仕入単価 (円/kg) *</label>
                 <input id="price" class="w-full p-3 border-2 border-input-border rounded-lg focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-300" type="number" placeholder="金額を入力" name="price" required>
             </div>
             <!-- 新しいフィールド：販売単価 -->
@@ -58,7 +58,7 @@
             </div>
             <!-- 新しいフィールド：販売数量 -->
             <div>
-                <label for="quantity_sold" class="block mb-2 font-bold">販売数量 (kg)</label>
+                <label for="quantity_sold" class="block mb-2 font-bold">数量 (kg)</label>
                 <input id="quantity_sold" class="w-full p-3 border-2 border-input-border rounded-lg focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-300" type="number" placeholder="販売数量を入力" name="quantity_sold">
             </div>
             <!-- 既存のフィールド（続き） -->

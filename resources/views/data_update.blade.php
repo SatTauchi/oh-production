@@ -35,7 +35,7 @@
                 </select>
             </div>
             <div class="mb-6">
-                <label for="price" class="block mb-2 font-bold text-gray-700">仕入価格 (円/kg)</label>
+                <label for="price" class="block mb-2 font-bold text-gray-700">仕入単価 (円/kg)</label>
                 <input id="price" class="w-full p-3 border-2 border-blue-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-300" type="number" placeholder="金額を入力（円/kg）" name="price" value="{{ $result['price'] }}" required>
             </div>
             <div class="mb-6">
@@ -43,7 +43,7 @@
                 <input id="selling_price" class="w-full p-3 border-2 border-blue-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-300" type="number" placeholder="販売単価を入力（円/kg）" name="selling_price" value="{{ $result['selling_price'] }}">
             </div>
             <div class="mb-6">
-                <label for="quantity_sold" class="block mb-2 font-bold text-gray-700">販売数量 (kg)</label>
+                <label for="quantity_sold" class="block mb-2 font-bold text-gray-700">数量 (kg)</label>
                 <input id="quantity_sold" class="w-full p-3 border-2 border-blue-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-300" type="number" placeholder="販売数量を入力（kg）" name="quantity_sold" value="{{ $result['quantity_sold'] }}">
             </div>
             <div class="mb-6">

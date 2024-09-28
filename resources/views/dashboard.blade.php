@@ -496,9 +496,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             日付：${item.date} <br> 
                             魚：${item.fish} <br> 
                             産地：${item.place} <br> 
-                            仕入金額：${item.price} 円/kg<br>
+                            仕入単価：${item.price} 円/kg<br>
                             販売単価：${item.selling_price ? item.selling_price + ' 円/kg' : '未設定'}<br>
-                            販売数量：${item.quantity_sold ? item.quantity_sold + ' kg' : '未設定'}<br>
+                            数量：${item.quantity_sold ? item.quantity_sold + ' kg' : '未設定'}<br>
                             メモ：${item.remarks}
                         </p>
                         <button class="renew absolute w-3/12 bottom-4 right-4 px-3 py-1 text-sm border border-primary text-primary font-bold rounded-full transition duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50" type="button" data-id="${item.id}">

@@ -4,24 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use LINE\Clients\MessagingApi\Configuration;
 use LINE\Clients\MessagingApi\Api\MessagingApiApi;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
-use LINE\Clients\MessagingApi\ApiException;
 use LINE\Webhook\Model\MessageEvent;
 use LINE\Webhook\Model\TextMessageContent;
 use LINE\Webhook\Model\ImageMessageContent;
 use LINE\Parser\EventRequestParser;
 use LINE\Webhook\Model\UserSource;
-use LINE\Webhook\Model\GroupSource;
-use LINE\Webhook\Model\RoomSource;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\FishPrice;
+use App\Models\UserState;
 use Exception;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class LineBotController extends Controller
 {
@@ -40,13 +36,10 @@ class LineBotController extends Controller
         }
 
         $client = new Client();
-        $config = new Configuration();
+        $config = new \LINE\Clients\MessagingApi\Configuration();
         $config->setAccessToken($channelToken);
 
-        $messagingApi = new MessagingApiApi(
-            client: $client,
-            config: $config,
-        );
+        $messagingApi = new MessagingApiApi(client: $client, config: $config);
 
         try {
             $parsedEvents = EventRequestParser::parseEventRequest($httpRequestBody, $channelSecret, $signature);
@@ -57,78 +50,159 @@ class LineBotController extends Controller
                 $eventMessage = $event->getMessage();
                 $source = $event->getSource();
                 $userId = null;
-                $displayName = null;
 
                 if ($source instanceof UserSource) {
                     $userId = $source->getUserId();
-                    try {
-                        $profile = $messagingApi->getProfile($userId);
-                        $displayName = $profile->getDisplayName();
-                    } catch (ApiException $e) {
-                        Log::error('Error retrieving profile from LINE API: ' . $e->getMessage());
-                        $displayName = 'Unknown User';
-                    }
-                } elseif ($source instanceof GroupSource) {
-                    $userId = $source->getGroupId();
-                    $displayName = 'Group User';
-                } elseif ($source instanceof RoomSource) {
-                    $userId = $source->getRoomId();
-                    $displayName = 'Room User';
                 }
 
                 if (!$userId) {
-                    throw new Exception("Unable to get user/group/room ID from the event source.");
+                    throw new Exception("Unable to get user ID from the event source.");
                 }
 
                 $user = User::firstOrCreate(
                     ['line_id' => $userId],
-                    [
-                        'provider' => 'line',
-                        'name' => $displayName,
-                        'email' => null,
-                        'password' => null,
-                    ]
+                    ['provider' => 'line', 'name' => 'User', 'email' => null, 'password' => null]
                 );
 
-                $responseMessage = '';
+                // ユーザー状態を取得または作成
+                $userState = UserState::firstOrCreate(['user_id' => $user->id], ['state' => 'awaiting_image']);
 
-                if ($eventMessage instanceof TextMessageContent) {
-                    $eventMessageText = $eventMessage->getText();
-                    $responseMessage = $this->processTextMessage($user, $eventMessageText);
-                } elseif ($eventMessage instanceof ImageMessageContent) {
-                    $responseMessage = $this->handleImageUpload($messagingApi, $event, $user);
-                } else {
-                    $responseMessage = "未対応のメッセージタイプです。";
-                }
+                // 状態に基づいて処理を分岐
+                switch ($userState->state) {
+                    case 'awaiting_image':
+                        if ($eventMessage instanceof ImageMessageContent) {
+                            $responseMessage = $this->handleImageUpload($messagingApi, $event, $user);
+                            $userState->update(['state' => 'awaiting_date']);
+                            return $this->sendReply($event, $responseMessage . "\n次に日付を入力してください。");
+                        } else {
+                            return $this->sendReply($event, "画像をアップロードしてください。");
+                        }
 
-                $message = new TextMessage([
-                    'type' => 'text',
-                    'text' => $responseMessage,
-                ]);
+                    case 'awaiting_date':
+                        if ($eventMessage instanceof TextMessageContent && $this->isValidDate($eventMessage->getText())) {
+                            $this->saveData($user, 'date', $eventMessage->getText());
+                            $userState->update(['state' => 'awaiting_fish']);
+                            return $this->sendReply($event, "日付が入力されました。\n次に魚の種類を入力してください。");
+                        } else {
+                            return $this->sendReply($event, "正しい日付を入力してください（例：2024-09-25）。");
+                        }
 
-                $request = new ReplyMessageRequest([
-                    'replyToken' => $event->getReplyToken(),
-                    'messages' => [$message],
-                ]);
+                    case 'awaiting_fish':
+                        if ($eventMessage instanceof TextMessageContent) {
+                            $this->saveData($user, 'fish', $eventMessage->getText());
+                            $userState->update(['state' => 'awaiting_place']);
+                            return $this->sendReply($event, "魚の種類が入力されました。\n次に産地を入力してください。");
+                        } else {
+                            return $this->sendReply($event, "魚の種類を入力してください。");
+                        }
 
-                $response = $messagingApi->replyMessageWithHttpInfo($request);
+                    case 'awaiting_place':
+                        if ($eventMessage instanceof TextMessageContent) {
+                            $this->saveData($user, 'place', $eventMessage->getText());
+                            $userState->update(['state' => 'awaiting_price']);
+                            return $this->sendReply($event, "産地が入力されました。\n次に仕入単価（円/kg）を入力してください。");
+                        } else {
+                            return $this->sendReply($event, "産地を入力してください。");
+                        }
 
-                $responseBody = $response[0];
-                $responseStatusCode = $response[1];
-                if ($responseStatusCode != 200) {
-                    throw new Exception($responseBody);
+                    case 'awaiting_price':
+                        if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
+                            $this->saveData($user, 'price', $eventMessage->getText());
+                            $userState->update(['state' => 'awaiting_selling_price']);
+                            return $this->sendReply($event, "仕入単価（円/kg）が入力されました。\n次に販売単価（円/kg）を入力してください。");
+                        } else {
+                            return $this->sendReply($event, "仕入単価（円/kg）を数値で入力してください。");
+                        }
+
+                    case 'awaiting_selling_price':
+                        if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
+                            $this->saveData($user, 'selling_price', $eventMessage->getText());
+                            $userState->update(['state' => 'awaiting_quantity_sold']);
+                            return $this->sendReply($event, "販売単価（円/kg）が入力されました。\n次に数量（/kg）を入力してください。");
+                        } else {
+                            return $this->sendReply($event, "販売単価（円/kg）を数値で入力してください。");
+                        }
+
+                    case 'awaiting_quantity_sold':
+                        if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
+                            $this->saveData($user, 'quantity_sold', $eventMessage->getText());
+                            $userState->update(['state' => 'awaiting_remarks']);
+                            return $this->sendReply($event, "数量（/kg）が入力されました。\n次にメモを入力してください。");
+                        } else {
+                            return $this->sendReply($event, "数量（/kg）を数値で入力してください。");
+                        }
+
+                    case 'awaiting_remarks':
+                        if ($eventMessage instanceof TextMessageContent) {
+                            $this->saveData($user, 'remarks', $eventMessage->getText());
+                            // 状態をリセットして、新しいデータ入力ができるようにする
+                            $userState->update(['state' => 'awaiting_image']);
+                            return $this->sendReply($event, "すべての入力が完了しました。\n新しいデータを入力するには、再度画像をアップロードしてください。");
+                        } else {
+                            return $this->sendReply($event, "メモを入力してください。");
+                        }
+
+                    case 'complete':
+                        // 入力完了後、再度入力を可能にするために状態をリセット
+                        $userState->update(['state' => 'awaiting_image']);
+                        return $this->sendReply($event, "新しいデータを入力する場合、画像をアップロードしてください。");
                 }
             }
 
             return response('OK', 200);
 
-        } catch (ApiException $e) {
-            Log::error('LINE API Error: ' . $e->getCode() . ':' . $e->getResponseBody());
-            return response('Error', 500);
         } catch (Exception $e) {
             Log::error('Error: ' . $e->getMessage());
             return response('Error', 500);
         }
+    }
+
+    private function sendReply($event, $message)
+    {
+        $replyToken = $event->getReplyToken();
+        $channelToken = config('services.line.channel_token');  // 環境変数からトークンを取得
+
+        $replyMessage = new TextMessage([
+            'type' => 'text',
+            'text' => $message,
+        ]);
+
+        $request = new ReplyMessageRequest([
+            'replyToken' => $replyToken,
+            'messages' => [$replyMessage],
+        ]);
+
+        // Guzzle HTTP クライアントを使ってリクエストを送信
+        $httpClient = new \GuzzleHttp\Client();
+        $response = $httpClient->post('https://api.line.me/v2/bot/message/reply', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $channelToken,  // Authorization ヘッダーを設定
+            ],
+            'json' => $request,  // リクエストデータを JSON 形式で送信
+        ]);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new Exception('Failed to send reply message. Status code: ' . $response->getStatusCode());
+        }
+    }
+
+    private function saveData($user, $field, $value)
+    {
+        // 最新の FishPrice レコードを取得して更新
+        $fishPrice = FishPrice::where('user_id', $user->id)
+                              ->whereNotNull('image_path')
+                              ->whereNull($field)
+                              ->orderBy('created_at', 'desc')
+                              ->first();
+
+        if ($fishPrice) {
+            $fishPrice->update([$field => $value]);
+        }
+    }
+
+    private function isValidDate($text)
+    {
+        return (bool)strtotime($text); // 簡易的に日付フォーマットが正しいかを確認
     }
 
     private function handleImageUpload(MessagingApiApi $messagingApi, MessageEvent $event, User $user)
@@ -190,76 +264,10 @@ class LineBotController extends Controller
             ]);
             $fishPrice->save();
 
-            return "画像が正常にアップロードされました。\n以下の形式で詳細情報を入力してください：\n日付,魚種,場所,価格,販売価格,販売数量,備考";
+            return "画像が正常にアップロードされました。";
         } catch (\Exception $e) {
             Log::error('Error retrieving image content: ' . $e->getMessage());
             return "画像のアップロードに失敗しました。";
         }
-    }
-
-    private function processTextMessage(User $user, string $message)
-    {
-        $parts = explode(',', $message);
-        if (count($parts) !== 7) {
-            return "正しい形式で入力してください：\n日付,魚種,場所,価格,販売価格,販売数量,備考";
-        }
-
-        $date = trim($parts[0]);
-        $fish = trim($parts[1]);
-        $place = trim($parts[2]);
-        $price = trim($parts[3]);
-        $sellingPrice = trim($parts[4]);
-        $quantitySold = trim($parts[5]);
-        $remarks = trim($parts[6]);
-
-        // 入力値のバリデーション
-        $validator = \Illuminate\Support\Facades\Validator::make(
-            [
-                'date' => $date,
-                'fish' => $fish,
-                'place' => $place,
-                'price' => $price,
-                'selling_price' => $sellingPrice,
-                'quantity_sold' => $quantitySold,
-                'remarks' => $remarks,
-            ],
-            [
-                'date' => 'required|date',
-                'fish' => 'required|string',
-                'place' => 'required|string',
-                'price' => 'required|numeric|min:0',
-                'selling_price' => 'nullable|numeric|min:0',
-                'quantity_sold' => 'nullable|integer|min:0',
-                'remarks' => 'nullable|string|max:200',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return "入力内容に誤りがあります。もう一度確認してください。";
-        }
-
-        // 最後にアップロードされた画像を持つFishPriceレコードを取得
-        $fishPrice = FishPrice::where('user_id', $user->id)
-                              ->whereNotNull('image_path')
-                              ->whereNull('fish')
-                              ->orderBy('created_at', 'desc')
-                              ->first();
-
-        if (!$fishPrice) {
-            return "先に画像をアップロードしてください。";
-        }
-
-        // FishPriceレコードを更新
-        $fishPrice->update([
-            'date' => $date,
-            'fish' => $fish,
-            'place' => $place,
-            'price' => $price,
-            'selling_price' => $sellingPrice ?: null,
-            'quantity_sold' => $quantitySold ?: null,
-            'remarks' => $remarks,
-        ]);
-
-        return "データが正常に保存されました。\n日付: {$date}\n魚種: {$fish}\n場所: {$place}\n価格: {$price}円\n販売価格: {$sellingPrice}円\n販売数量: {$quantitySold}\n備考: {$remarks}";
     }
 }
