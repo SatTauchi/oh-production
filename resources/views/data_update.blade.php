@@ -74,6 +74,8 @@
 @endsection
 
 @section('additional_scripts')
+<script>window.apiBaseUrl = "{{ config('app.api_base_url') }}";</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const textarea = document.getElementById('remarks');
@@ -106,10 +108,11 @@
         });
 
         // 削除ボタンのイベントリスナー
+        const API_BASE_URL = window.apiBaseUrl;
         document.getElementById('delete-btn').addEventListener('click', function() {
             if (confirm('このデータを削除しますか？')) {
                 const id = {{ $result['id'] }};
-                fetch('/api/soft-delete-fish-data', {
+                fetch(`${API_BASE_URL}/api/soft-delete-fish-data`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
