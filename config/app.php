@@ -71,6 +71,7 @@ return [
 
     'api_base_url' => env('API_BASE_URL'),
 
+    'base' => env('APP_BASE_PATH', 'Osakana_Howmuch'),
 
     /*
     |--------------------------------------------------------------------------

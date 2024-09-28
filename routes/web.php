@@ -47,7 +47,11 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/data-update/{id}', [FishPriceController::class, 'update'])->name('fish_price.update');
 
     // ソフトデリートAPI ルート
+    $basePath = config('path.base');
+
+    Route::group(['prefix' => $basePath], function () {
     Route::post('/api/soft-delete-fish-data', [FishPriceController::class, 'softDelete']);
+    });
 
     // ユーザーパスワード リセットリンク関連のルート
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])

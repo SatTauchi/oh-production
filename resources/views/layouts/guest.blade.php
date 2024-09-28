@@ -32,7 +32,7 @@
     </script>
 </head>
 <body class="font-sans bg-background-color text-text-color min-h-screen flex flex-col m-0 p-0">
-    <header class="bg-gradient-to-r from-primary to-primary-dark text-white p-5 text-center sticky top-0 z-50 shadow-md">
+    <header class="bg-gradient-to-r from-primary to-primary-dark text-white p-3 text-center sticky top-0 z-50 shadow-md">
         <div class="logo flex items-center justify-center">
             <img src="{{ asset('img/Logo.png') }}" alt="ロゴ" class="w-10 h-10 mr-2 object-contain">
             <span class="text-xl font-bold">おさかなハぅマっチ？</span>

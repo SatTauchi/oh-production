@@ -10,7 +10,7 @@
         @csrf
         <!-- Email Address -->
         <div class="form-group w-full mb-4">
-            <x-text-input id="email" class="w-full p-4 border-2 border-input-border rounded-lg text-base transition-all duration-300 
+            <x-text-input id="email" class="w-full p-3 border-2 border-input-border rounded-lg text-base transition-all duration-300 
             ease-in-out focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
                             type="email" 
                             name="email" 
@@ -20,7 +20,7 @@
         </div>
         <!-- Password -->
         <div class="form-group w-full mb-4">
-            <x-text-input id="password" class="w-full p-4 border-2 border-input-border rounded-lg text-base transition-all duration-300 
+            <x-text-input id="password" class="w-full p-3 border-2 border-input-border rounded-lg text-base transition-all duration-300 
             ease-in-out focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
                             type="password"
                             name="password"
@@ -29,8 +29,8 @@
             <x-input-error :messages="$errors->get('email')" class="error text-red-500 mt-2 mb-2" />                
             <x-input-error :messages="$errors->get('password')" class="error text-red-500 mt-2 mb-2" />
         </div>
-        <button class="btn bg-gradient-to-r from-primary to-primary-dark text-white border-none py-4 px-5 rounded-lg cursor-pointer 
-        text-lg font-bold w-full max-w-xs transition-all duration-300 ease-in-out shadow-md hover:from-primary-light hover:to-primary 
+        <button class="btn bg-gradient-to-r from-primary to-primary-dark text-white border-none py-3 px-4 rounded-lg cursor-pointer 
+        text-base font-bold w-full max-w-xs transition-all duration-300 ease-in-out shadow-md hover:from-primary-light hover:to-primary 
         hover:transform hover:-translate-y-0.5 hover:shadow-lg active:transform active:translate-y-0.5" type="submit">ログイン</button>
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
