@@ -92,16 +92,38 @@
         justify-content: space-between;
         padding: 1rem;
     }
-    #expiry-alerts {
-        max-height: 300px;
-        overflow-y: auto;
+    #expiry-alerts-container {
+        background: linear-gradient(135deg, #FFF5F5 0%, #FED7D7 100%);
+        border: 1px solid #FEB2B2;
+        box-shadow: 0 4px 6px rgba(254, 178, 178, 0.1);
     }
+
+    #expiry-alerts-container h3 {
+        color: #E53E3E;
+    }
+
     .alert-item {
-        background-color: #FEF3C7;
-        border-left: 4px solid #F59E0B;
-        padding: 1rem;
-        margin-bottom: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #FC8181;
+        border-left: 4px solid #E53E3E;
     }
+
+    .alert-item p {
+        color: #2D3748;
+    }
+    
+    .confirm-btn {
+        background-color: #E53E3E;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .confirm-btn:hover {
+        background-color: #C53030;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
 </style>
 @endsection
 
@@ -133,26 +155,18 @@
             <h3 class="text-xl font-bold mb-4 text-primary">中野支部　価格情報</h3>
             <ul class="space-y-4" id="recent-comments">
                 <!-- 新着コメントがここに動的に挿入されます -->
-                <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                    <p class="text-sm text-gray-600">9-04 台風10号の影響で入荷が全般的に少ない</p>
-                </div>
-                <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                    <p class="text-sm text-gray-600">9-05 仲買情報では今年は水温が高くカツオが豊漁</p>
-                </div>
-                <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                    <p class="text-sm text-gray-600">9-14 なんか並のプロダクトと化しています </p>
-                </div>
             </ul>
         </div>
     </div>
 
     <!-- 消費期限アラートセクション -->
-    <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl mt-6">
+    <div id="expiry-alerts-container" class="rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl mt-6" style="min-height: 200px; overflow-y: auto;">
         <h3 class="text-xl font-bold mb-4 text-primary">消費期限アラート</h3>
-        <div class="mt-6" id="expiry-alerts" >
+        <div id="expiry-alerts">
             <!-- アラートがここに動的に挿入されます -->
         </div>
     </div>
+
     <!-- 新着データセクション -->
     <div class="mt-6">
         <h3 class="text-xl font-bold mb-4 text-primary">最新の入力データ</h3>
@@ -505,6 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 仕入単価：${item.price} 円/kg<br>
                                 販売単価：${item.selling_price ? item.selling_price + ' 円/kg' : '未設定'}<br>
                                 数量：${item.quantity_sold ? item.quantity_sold + ' kg' : '未設定'}<br>
+                                消費期限：${item.expiry_date || '未設定'}<br>
                                 メモ：${item.remarks}
                             </p>
                             <button class="renew absolute w-3/12 bottom-4 right-4 px-3 py-1 text-sm border border-primary text-primary font-bold rounded-full transition duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50" type="button" data-id="${item.id}">
@@ -559,25 +574,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 const alertsContainer = document.getElementById('expiry-alerts');
                 if (alerts.length === 0) {
                     alertsContainer.innerHTML = '<p>消費期限切れの商品はありません。</p>';
-                    return;
+                } else {
+                    let alertsHtml = '';
+                    alerts.forEach(alert => {
+                        alertsHtml += `
+                            <div class="alert-item mb-4 p-4 border border-red-300 rounded-lg" data-id="${alert.id}">
+                                <p class="font-bold">${alert.fish}</p>
+                                <p>消費期限: ${alert.expiry_date}</p>
+                                <p>仕入単価: ¥${alert.price.toLocaleString()}/kg</p>
+                                <p class="text-red-600 font-semibold">値引き提案: ¥${alert.discount_price.toLocaleString()}/kg</p>
+                                <p>数量: ${alert.quantity_sold}kg</p>
+                                <button class="confirm-btn mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    確認済み
+                                </button>
+                            </div>
+                        `;
+                    });
+                    alertsContainer.innerHTML = alertsHtml;
                 }
                 
-                let alertsHtml = '';
-                alerts.forEach(alert => {
-                    alertsHtml += `
-                        <div class="alert-item mb-4 p-4 border border-red-300 rounded-lg" data-id="${alert.id}">
-                            <p class="font-bold">${alert.fish}</p>
-                            <p>消費期限: ${alert.expiry_date}</p>
-                            <p>仕入単価: ${alert.price.toLocaleString()}円/kg</p>
-                            <p class="text-red-600 font-semibold">価格提案: ${alert.discount_price.toLocaleString()}円/kg</p>
-                            <p>数量: ${alert.quantity_sold}kg</p>
-                            <button class="confirm-btn mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                確認済み
-                            </button>
-                        </div>
-                    `;
-                });
-                alertsContainer.innerHTML = alertsHtml;
+                // コンテナのサイズを調整
+                adjustContainerSize();
 
                 // 確認ボタンにイベントリスナーを追加
                 document.querySelectorAll('.confirm-btn').forEach(btn => {
@@ -591,6 +608,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching expiry alerts:', error);
                 document.getElementById('expiry-alerts').innerHTML = '<p>アラート情報の取得に失敗しました。</p>';
             });
+    }
+
+    function adjustContainerSize() {
+        const container = document.getElementById('expiry-alerts-container');
+        const content = document.getElementById('expiry-alerts');
+        const maxHeight = window.innerHeight * 0.6; // ビューポートの高さの60%を最大高さとする
+
+        // コンテンツの高さが最大高さを超える場合、スクロール可能にする
+        if (content.scrollHeight > maxHeight) {
+            container.style.height = `${maxHeight}px`;
+            container.style.overflowY = 'auto';
+        } else {
+            container.style.height = 'auto';
+            container.style.overflowY = 'visible';
+        }
     }
 
     function confirmExpiry(id) {
@@ -619,6 +651,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function adjustColor(color, amount) {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
     }
+
+    // ウィンドウサイズが変更されたときにコンテナサイズを再調整
+    window.addEventListener('resize', adjustContainerSize);
 
     fetchFishTypes();
     initializeChart();
