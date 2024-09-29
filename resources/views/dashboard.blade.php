@@ -36,7 +36,7 @@
         border-radius: 9999px;
         transition: all 0.3s;
         background-color: white;
-        font-size: 16px; /* デフォルトのフォントサイズ */
+        font-size: 16px;
     }
 
     .fish-select:hover {
@@ -48,7 +48,6 @@
         outline: none;
         box-shadow: 0 0 0 3px rgba(52, 144, 220, 0.5);
     }
-    /* レスポンシブデザインの追加 */
     @media (max-width: 768px) {
         .fish-select-container {
             width: 150px;
@@ -93,61 +92,74 @@
         justify-content: space-between;
         padding: 1rem;
     }
+    #expiry-alerts {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    .alert-item {
+        background-color: #FEF3C7;
+        border-left: 4px solid #F59E0B;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+    }
 </style>
 @endsection
 
 @section('content')
-<!--<div class="container mx-auto px-4">-->
-    <!--<div class="bg-white rounded-3xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl mb-8">-->
-        <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute 
-        after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-blue-500 after:rounded-full">ダッシュボード　（魚芳　中野支部）</h2>
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
-            <div class="dashboard-card-pricetrend bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-primary">自社の価格推移</h3>
-                    <div class="fish-select-container">
-                        <select id="fish-select" class="fish-select"></select>
-                    </div>
+    <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute 
+    after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-blue-500 after:rounded-full">ダッシュボード　（魚芳　中野支部）</h2>
+    <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+        <div class="dashboard-card-pricetrend bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-primary">自社の価格推移</h3>
+                <div class="fish-select-container">
+                    <select id="fish-select" class="fish-select"></select>
                 </div>
-                <div class="chart-container">
-                    <canvas id="priceChart"></canvas>
-                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
             </div>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div class="dashboard-card bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl flex flex-col">
-                <h3 class="text-xl font-bold mb-4 text-primary">自社の仕入割合</h3>
-                <div class="chart-container flex-grow relative w-full" style="height: 300px;">
-                    <canvas id="pie-chart" class="w-full h-full"></canvas>
-                </div>
-            </div>
-            <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                <h3 class="text-xl font-bold mb-4 text-primary">中野支部　価格情報</h3>
-                <ul class="space-y-4" id="recent-comments">
-                    <!-- 新着コメントがここに動的に挿入されます -->
-                    <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                        <p class="text-sm text-gray-600">9-04 台風10号の影響で入荷が全般的に少ない</p>
-                    </div>
-                    <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                        <p class="text-sm text-gray-600">9-05 仲買情報では今年は水温が高くカツオが豊漁</p>
-                    </div>
-                    <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-                        <p class="text-sm text-gray-600">9-14 なんか並のプロダクトと化しています </p>
-                    </div>
-                </ul>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div class="dashboard-card bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl flex flex-col">
+            <h3 class="text-xl font-bold mb-4 text-primary">自社の仕入割合</h3>
+            <div class="chart-container flex-grow relative w-full" style="height: 300px;">
+                <canvas id="pie-chart" class="w-full h-full"></canvas>
             </div>
         </div>
+        <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
+            <h3 class="text-xl font-bold mb-4 text-primary">中野支部　価格情報</h3>
+            <ul class="space-y-4" id="recent-comments">
+                <!-- 新着コメントがここに動的に挿入されます -->
+                <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
+                    <p class="text-sm text-gray-600">9-04 台風10号の影響で入荷が全般的に少ない</p>
+                </div>
+                <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
+                    <p class="text-sm text-gray-600">9-05 仲買情報では今年は水温が高くカツオが豊漁</p>
+                </div>
+                <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
+                    <p class="text-sm text-gray-600">9-14 なんか並のプロダクトと化しています </p>
+                </div>
+            </ul>
+        </div>
+    </div>
 
-        <!-- 新着データセクション -->
-        <div class="mt-6">
-            <h3 class="text-xl font-bold mb-4 text-primary">最新の入力データ</h3>
-            <div id="list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 新着データカードがここに動的に挿入されます -->
-            </div>
+    <!-- 消費期限アラートセクション -->
+    <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl mt-6">
+        <h3 class="text-xl font-bold mb-4 text-primary">消費期限アラート</h3>
+        <div class="mt-6" id="expiry-alerts" >
+            <!-- アラートがここに動的に挿入されます -->
         </div>
-<!--    </div>-->
-<!--</div>-->
+    </div>
+    <!-- 新着データセクション -->
+    <div class="mt-6">
+        <h3 class="text-xl font-bold mb-4 text-primary">最新の入力データ</h3>
+        <div id="list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- 新着データカードがここに動的に挿入されます -->
+        </div>
+    </div>
 @endsection
 
 @section('additional_scripts')
@@ -162,19 +174,19 @@ const API_BASE_URL = window.apiBaseUrl;
 document.addEventListener('DOMContentLoaded', function() {
     let priceChart, piechart;
     const colorMap = {
-        'ハマチ': '#4ECDC4',  // ターコイズ
-        'マグロ': '#FF6B6B',  // 鮮やかな赤
-        'サバ': '#45B7D1',    // 明るい青
-        'アジ': '#FFA07A',    // ライトサーモン
-        'タイ': '#98D8C8',    // ミントグリーン
-        'サーモン': '#FFBE76', // パステルオレンジ
-        'イワシ': '#A8D8EA',  // ライトスカイブルー
-        'カツオ': '#FF8C94',  // ライトコーラル
+        'ハマチ': '#4ECDC4',
+        'マグロ': '#FF6B6B',
+        'サバ': '#45B7D1',
+        'アジ': '#FFA07A',
+        'タイ': '#98D8C8',
+        'サーモン': '#FFBE76',
+        'イワシ': '#A8D8EA',
+        'カツオ': '#FF8C94',
     };
 
     const chartOptions = {
         responsive: true,
-    maintainAspectRatio: false,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: true
@@ -182,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tooltip: {
                 callbacks: {
                     title: function() {
-                        return ''; // タイトル（日付）を空文字列に設定
+                        return '';
                     },
                     label: function(context) {
                         let label = context.dataset.label || '';
@@ -191,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         if (context.parsed.y !== null) {
                             label += new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(context.parsed.y);
-                            if (context.datasetIndex <= 1) { // 仕入価格と販売価格の場合
+                            if (context.datasetIndex <= 1) {
                                 label += '/kg';
                             }
                         }
@@ -316,48 +328,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchFishTypes() {
-    fetch(`${API_BASE_URL}/api/analysis/fish-types`)
-        .then(response => response.json())
-        .then(fishTypes => {
-            const select = document.getElementById('fish-select');
-            // select.innerHTML = '<option value="">魚を選択して下さい</option>';
-            fishTypes.forEach(fish => {
-                const option = document.createElement('option');
-                option.value = fish;
-                option.textContent = fish;
-                if (fish === 'ハマチ') {
-                    option.selected = true;
-                }
-                select.appendChild(option);
+        fetch(`${API_BASE_URL}/api/analysis/fish-types`)
+            .then(response => response.json())
+            .then(fishTypes => {
+                const select = document.getElementById('fish-select');
+                fishTypes.forEach(fish => {
+                    const option = document.createElement('option');
+                    option.value = fish;
+                    option.textContent = fish;
+                    if (fish === 'ハマチ') {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                loadDefaultFishData();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadDefaultFishData();
             });
-            // フィッシュタイプの取得後、デフォルトデータを読み込む
-            loadDefaultFishData();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // エラーが発生しても、デフォルトデータを読み込もうとする
-            loadDefaultFishData();
-        });
     }
 
     function fetchDataAndDrawChart() {
-    const fishSelect = document.getElementById('fish-select');
-    
-    fishSelect.addEventListener('change', function() {
-        const selectedFish = this.value;
-        if (selectedFish !== "") {
-            loadFishData(selectedFish);
-        } else {
-            priceChart.data.datasets = [];
-            priceChart.update();
-        }
-    });
-}
+        const fishSelect = document.getElementById('fish-select');
+        
+        fishSelect.addEventListener('change', function() {
+            const selectedFish = this.value;
+            if (selectedFish !== "") {
+                loadFishData(selectedFish);
+            } else {
+                priceChart.data.datasets = [];
+                priceChart.update();
+            }
+        });
+    }
 
     function loadDefaultFishData() {
         const defaultFish = 'ハマチ';
         loadFishData(defaultFish);
-        // セレクトボックスの値を 'ハマチ' に設定（既に設定されている可能性もあるが、念のため）
         const selectElement = document.getElementById('fish-select');
         if (selectElement.value !== defaultFish) {
             selectElement.value = defaultFish;
@@ -377,144 +385,142 @@ document.addEventListener('DOMContentLoaded', function() {
                     let profit = data.map(item => (item.average_selling_price - item.average_price) * item.quantity_sold);
                     updateChart(dates, prices, sellingPrices, profit, fishName);
                 }
-        })
-        .catch(() => {
-            alert('データの取得に失敗しました。');
-        });
+            })
+            .catch(() => {
+                alert('データの取得に失敗しました。');
+            });
     }
 
     function drawPieChart() {
-    fetch(`${API_BASE_URL}/api/fish-purchase-total`)
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById('pie-chart').getContext('2d');
-            if (piechart) {
-                piechart.destroy();
-            }
-            
-            // データの合計を計算
-            const sum = data.data.reduce((acc, val) => acc + parseFloat(val), 0);
-            
-            // データを金額でソートし、上位2つを特定
-            const sortedIndices = data.data
-                .map((value, index) => ({ value: parseFloat(value), index }))
-                .sort((a, b) => b.value - a.value)
-                .map(item => item.index);
-            const top2Indices = new Set(sortedIndices.slice(0, 2));
+        fetch(`${API_BASE_URL}/api/fish-purchase-total`)
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('pie-chart').getContext('2d');
+                if (piechart) {
+                    piechart.destroy();
+                }
+                
+                const sum = data.data.reduce((acc, val) => acc + parseFloat(val), 0);
+                
+                const sortedIndices = data.data
+                    .map((value, index) => ({ value: parseFloat(value), index }))
+                    .sort((a, b) => b.value - a.value)
+                    .map(item => item.index);
+                const top2Indices = new Set(sortedIndices.slice(0, 2));
 
-            piechart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        data: data.data,
-                        backgroundColor: data.labels.map(label => colorMap[label] || getRandomColor()),
-                        borderColor: 'white',
-                        borderWidth: 2
-                    }]
-                },
-                plugins: [ChartDataLabels],
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            left: 10,
-                            right: 10,
-                            top: 0,
-                            bottom: 0
-                        }
+                piechart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.data,
+                            backgroundColor: data.labels.map(label => colorMap[label] || getRandomColor()),
+                            borderColor: 'white',
+                            borderWidth: 2
+                        }]
                     },
-                    plugins: {
-                        datalabels: {
-                            color: '#fff',
-                            font: {
-                                weight: 'bold',
-                                size: 16
-                            },
-                            formatter: (value, ctx) => {
-                                const index = ctx.dataIndex;
-                                if (top2Indices.has(index)) {
-                                    const datapoint = ctx.chart.data.datasets[0].data[index];
-                                    const percentage = ((parseFloat(datapoint) / sum) * 100).toFixed(1) + "%";
-                                    return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(datapoint) + '\n' + percentage;
-                                } else {
-                                    return null; // TOP2以外は何も表示しない
-                                }
-                            },
-                            textAlign: 'center'
+                    plugins: [ChartDataLabels],
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                left: 10,
+                                right: 10,
+                                top: 0,
+                                bottom: 0
+                            }
                         },
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: {
-                                boxWidth: 12,
-                                padding: 20,
+                        plugins: {
+                            datalabels: {
+                                color: '#fff',
                                 font: {
-                                    size: 11
+                                    weight: 'bold',
+                                    size: 16
+                                },
+                                formatter: (value, ctx) => {
+                                    const index = ctx.dataIndex;
+                                    if (top2Indices.has(index)) {
+                                        const datapoint = ctx.chart.data.datasets[0].data[index];
+                                        const percentage = ((parseFloat(datapoint) / sum) * 100).toFixed(1) + "%";
+                                        return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(datapoint) + '\n' + percentage;
+                                    } else {
+                                        return null;
+                                    }
+                                },
+                                textAlign: 'center'
+                            },
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                    font: {
+                                        size: 11
+                                    }
                                 }
-                            }
-                        },
-                        title: {
-                            display: false,
-                            text: '魚種別仕入れ総額',
-                            font: {
-                                size: 16,
-                                weight: 'bold'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
+                            },
+                            title: {
+                                display: false,
+                                text: '魚種別仕入れ総額',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(context.parsed);
+                                        }
+                                        return label;
                                     }
-                                    if (context.parsed !== null) {
-                                        label += new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(context.parsed);
-                                    }
-                                    return label;
                                 }
                             }
                         }
                     }
-                }
+                });
             });
-        });
-}
+    }
 
     function fetchRecentData() {
-    fetch(`${API_BASE_URL}/api/fish-data?fish=`)
-        .then(response => response.json())
-        .then(data => {
-            let output = '';
-            data.slice(0, 6).forEach(function(item) {
-                output += `
-                    <div class="dashboard-card bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between relative" data-id="${item.id}">
-                        <img src="${item.photo ? item.photo : '/images/placeholder.jpg'}" alt="${item.fish}" class="w-full h-auto rounded-2xl mb-4">
-                        <p class="text-sm text-gray-600 mb-8"> <!-- mb-8 を追加してボタンのスペースを確保 -->
-                            日付：${item.date} <br> 
-                            魚：${item.fish} <br> 
-                            産地：${item.place} <br> 
-                            仕入単価：${item.price} 円/kg<br>
-                            販売単価：${item.selling_price ? item.selling_price + ' 円/kg' : '未設定'}<br>
-                            数量：${item.quantity_sold ? item.quantity_sold + ' kg' : '未設定'}<br>
-                            メモ：${item.remarks}
-                        </p>
-                        <button class="renew absolute w-3/12 bottom-4 right-4 px-3 py-1 text-sm border border-primary text-primary font-bold rounded-full transition duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50" type="button" data-id="${item.id}">
-                            編集
-                        </button>
-                    </div>
-                `;
+        fetch(`${API_BASE_URL}/api/fish-data?fish=`)
+            .then(response => response.json())
+            .then(data => {
+                let output = '';
+                data.slice(0, 6).forEach(function(item) {
+                    output += `
+                        <div class="dashboard-card bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between relative" data-id="${item.id}">
+                            <img src="${item.photo ? item.photo : '/images/placeholder.jpg'}" alt="${item.fish}" class="w-full h-auto rounded-2xl mb-4">
+                            <p class="text-sm text-gray-600 mb-8">
+                                日付：${item.date} <br> 
+                                魚：${item.fish} <br> 
+                                産地：${item.place} <br> 
+                                仕入単価：${item.price} 円/kg<br>
+                                販売単価：${item.selling_price ? item.selling_price + ' 円/kg' : '未設定'}<br>
+                                数量：${item.quantity_sold ? item.quantity_sold + ' kg' : '未設定'}<br>
+                                メモ：${item.remarks}
+                            </p>
+                            <button class="renew absolute w-3/12 bottom-4 right-4 px-3 py-1 text-sm border border-primary text-primary font-bold rounded-full transition duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50" type="button" data-id="${item.id}">
+                                編集
+                            </button>
+                        </div>
+                    `;
+                });
+                document.getElementById('list').innerHTML = output;
+                addEventListeners();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('データの取得に失敗しました。');
             });
-            document.getElementById('list').innerHTML = output;
-            addEventListeners();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('データの取得に失敗しました。');
-        });
-}
+    }
 
     function addEventListeners() {
         document.querySelectorAll('.renew').forEach(function(button) {
@@ -546,6 +552,65 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    function fetchExpiryAlerts() {
+        fetch(`${API_BASE_URL}/api/expiry-alerts`)
+            .then(response => response.json())
+            .then(alerts => {
+                const alertsContainer = document.getElementById('expiry-alerts');
+                if (alerts.length === 0) {
+                    alertsContainer.innerHTML = '<p>消費期限切れの商品はありません。</p>';
+                    return;
+                }
+                
+                let alertsHtml = '';
+                alerts.forEach(alert => {
+                    alertsHtml += `
+                        <div class="alert-item mb-4 p-4 border border-red-300 rounded-lg" data-id="${alert.id}">
+                            <p class="font-bold">${alert.fish}</p>
+                            <p>消費期限: ${alert.expiry_date}</p>
+                            <p>仕入単価: ${alert.price.toLocaleString()}円/kg</p>
+                            <p class="text-red-600 font-semibold">価格提案: ${alert.discount_price.toLocaleString()}円/kg</p>
+                            <p>数量: ${alert.quantity_sold}kg</p>
+                            <button class="confirm-btn mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                確認済み
+                            </button>
+                        </div>
+                    `;
+                });
+                alertsContainer.innerHTML = alertsHtml;
+
+                // 確認ボタンにイベントリスナーを追加
+                document.querySelectorAll('.confirm-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.closest('.alert-item').dataset.id;
+                        confirmExpiry(id);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching expiry alerts:', error);
+                document.getElementById('expiry-alerts').innerHTML = '<p>アラート情報の取得に失敗しました。</p>';
+            });
+    }
+
+    function confirmExpiry(id) {
+        fetch(`${API_BASE_URL}/api/confirm-expiry/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // アラートを再取得して表示を更新
+                fetchExpiryAlerts();
+            }
+        })
+        .catch(error => console.error('Error confirming expiry:', error));
+    }
+
     function getRandomColor(alpha = 1) {
         const hue = Math.floor(Math.random() * 360);
         return `hsla(${hue}, 70%, 60%, ${alpha})`;
@@ -561,6 +626,7 @@ document.addEventListener('DOMContentLoaded', function() {
     drawPieChart();
     fetchRecentData();
     fetchRecentComments();
+    fetchExpiryAlerts();
 });
 </script>
 @endsection

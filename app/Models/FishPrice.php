@@ -20,11 +20,13 @@ class FishPrice extends Model
         'fish',
         'place',
         'price',
-        'selling_price',  // 追加
-        'quantity_sold',  // 追加
+        'selling_price',
+        'quantity_sold',
+        'expiry_date', // 追加
         'remarks',
         'image_path',
-        'delete_flg',
+        'delete_flg',   
+        'expiry_confirmed', // 追加
     ];
 
     /**
@@ -35,6 +37,8 @@ class FishPrice extends Model
     protected $casts = [
         'date' => 'date',
         'price' => 'decimal:2',
+        'expiry_date' => 'date', // 追加
+        'expiry_confirmed' => 'boolean', // 追加
     ];
 
     /**
@@ -68,7 +72,6 @@ class FishPrice extends Model
     public static function getAveragePriceByFish($fishType)
     {
         return self::where('fish', $fishType)->avg('price');
-        
     }
 
     /**
@@ -91,4 +94,16 @@ class FishPrice extends Model
         return $query->where('delete_flg', 0);
     }
 
+    /**
+     * 消費期限が切れている商品を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getExpiredItems()
+    {
+        return self::where('expiry_date', '<', now())
+                    ->where('delete_flg', 0)
+                    ->where('expiry_confirmed', false)  // 確認済みでないものだけを取得
+                    ->get();
+    }
 }

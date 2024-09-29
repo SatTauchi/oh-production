@@ -32,11 +32,12 @@ class FishPriceController extends Controller
             'date' => 'required|date',
             'fish' => 'required|string',
             'place' => 'nullable|string',
-            'price' => 'required|integer|min:0',  // price を int に変更
-            'selling_price' => 'nullable|integer|min:0',  // selling_price も int に変更
-            'quantity_sold' => 'nullable|integer|min:0',
+            'price' => 'required|numeric',
+            'selling_price' => 'nullable|numeric',
+            'quantity_sold' => 'nullable|numeric',
+            'expiry_date' => 'required|date', // 追加
             'remarks' => 'nullable|string|max:200',
-            'imgFile' => 'nullable|image|max:2048',
+            'imgFile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $validatedData['user_id'] = auth()->id();
@@ -66,15 +67,16 @@ class FishPriceController extends Controller
 
         $data = $query->get()->map(function ($item) {
             return [
-                'id' => $item->id,
-                'date' => Carbon::parse($item->date)->format('Y-m-d'),
-                'fish' => $item->fish,
-                'place' => $item->place,
-                'price' => intval($item->price),  // price を int として扱う
-                'selling_price' => $item->selling_price ? intval($item->selling_price) : null,
-                'quantity_sold' => $item->quantity_sold ? intval($item->quantity_sold) : null,
-                'remarks' => $item->remarks,
-                'photo' => $item->image_path ? asset('storage/' . $item->image_path) : null,
+            'id' => $item->id,
+            'date' => Carbon::parse($item->date)->format('Y-m-d'),
+            'fish' => $item->fish,
+            'place' => $item->place,
+            'price' => intval($item->price),  // price を int として扱う
+            'selling_price' => $item->selling_price ? intval($item->selling_price) : null,
+            'quantity_sold' => $item->quantity_sold ? intval($item->quantity_sold) : null,
+            'expiry_date' => $item->expiry_date ? Carbon::parse($item->expiry_date)->format('Y-m-d') : null, // 追加
+            'remarks' => $item->remarks,
+            'photo' => $item->image_path ? asset('storage/' . $item->image_path) : null,
             ];
         });
 
@@ -106,14 +108,15 @@ class FishPriceController extends Controller
 
         $result = [
             'id' => $fishPrice->id,
-            'date' => Carbon::parse($fishPrice->date)->format('Y-m-d'),
+            'date' => $fishPrice->date ? $fishPrice->date->format('Y-m-d') : null,
             'fish' => $fishPrice->fish,
             'place' => $fishPrice->place,
-            'price' => intval($fishPrice->price),  // price を int として扱う
+            'price' => $fishPrice->price,
             'selling_price' => $fishPrice->selling_price,
             'quantity_sold' => $fishPrice->quantity_sold,
+            'expiry_date' => $fishPrice->expiry_date ? $fishPrice->expiry_date->format('Y-m-d') : null,
             'remarks' => $fishPrice->remarks,
-            'photo' => $fishPrice->image_path ? asset('storage/' . $fishPrice->image_path) : null,
+            'photo' => $fishPrice->image_url,
         ];
 
         return view('data_update', compact('result'));
@@ -127,12 +130,14 @@ class FishPriceController extends Controller
         $validatedData = $request->validate([
             'date' => 'required|date',
             'fish' => 'required|string',
-            'place' => 'required|string',
-            'price' => 'required|integer|min:0',  // price を int に変更
-            'selling_price' => 'nullable|integer|min:0',  // selling_price も int に変更
-            'quantity_sold' => 'nullable|integer|min:0',
+            'place' => 'nullable|string',
+            'price' => 'required|numeric',
+            'selling_price' => 'nullable|numeric',
+            'quantity_sold' => 'nullable|numeric',
+            'expiry_date' => 'required|date', // 追加
             'remarks' => 'nullable|string|max:200',
-            'imgFile' => 'nullable|image|max:2048',
+            'imgFile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
         ]);
 
         if ($request->hasFile('imgFile')) {
@@ -162,4 +167,36 @@ class FishPriceController extends Controller
         
         return response()->json(['success' => true]);
     }
+
+    // 期限切れ商品の取得 -> not confirmedの商品のみ
+
+    public function confirmExpiry($id)
+    {
+        $fishPrice = FishPrice::findOrFail($id);
+        $fishPrice->update(['expiry_confirmed' => true]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function getExpiryAlerts()
+    {
+        $expiredItems = FishPrice::getExpiredItems();
+        $formattedItems = $expiredItems->map(function ($item) {
+        $discountFactor = mt_rand(105, 110) / 100; // 1.05 から 1.10 のランダムな変数をかけて割引価格を算出
+        $discountPrice = round($item->price * $discountFactor);
+
+            return [
+                'id' => $item->id,
+                'fish' => $item->fish,
+                'expiry_date' => $item->expiry_date->format('Y-m-d'),
+                'price' => intval($item->price),
+                'discount_price' => $discountPrice,
+                'quantity_sold' => $item->quantity_sold,
+            ];
+        });
+        return response()->json($formattedItems);
+    }
+
+
+
 }

@@ -40,7 +40,6 @@ Route::middleware(['auth'])->group(function () {
     // API ルート
     Route::get('/api/fish-data', [FishPriceController::class, 'getData']);
     Route::post('/api/delete-fish-data', [FishPriceController::class, 'deleteData']);
-    
 
     // データ更新画面
     Route::get('/data-update/{id}', [FishPriceController::class, 'edit'])->name('data.edit');
@@ -48,6 +47,10 @@ Route::middleware(['auth'])->group(function () {
 
     // ソフトデリートAPI ルート
     Route::post('/api/soft-delete-fish-data', [FishPriceController::class, 'softDelete']);
+
+    // 消費期限切れの商品を取得するためのルート
+    Route::post('/api/confirm-expiry/{id}', [FishPriceController::class, 'confirmExpiry'])->name('api.confirm-expiry');
+    Route::get('/api/expiry-alerts', [FishPriceController::class, 'getExpiryAlerts'])->name('api.expiry-alerts');
 
     // ユーザーパスワード リセットリンク関連のルート
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])

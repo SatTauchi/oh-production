@@ -73,16 +73,16 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof ImageMessageContent) {
                             $responseMessage = $this->handleImageUpload($messagingApi, $event, $user);
                             $userState->update(['state' => 'awaiting_date']);
-                            return $this->sendReply($event, $responseMessage . "\n次に日付を入力してください。");
+                            return $this->sendReply($event, $responseMessage . "\n次に日付を入力します。");
                         } else {
-                            return $this->sendReply($event, "画像をアップロードしてください。");
+                            return $this->sendReply($event, "画像をアップロードしましょう！");
                         }
 
                     case 'awaiting_date':
                         if ($eventMessage instanceof TextMessageContent && $this->isValidDate($eventMessage->getText())) {
                             $this->saveData($user, 'date', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_fish']);
-                            return $this->sendReply($event, "日付が入力されました。\n次に魚の種類を入力してください。");
+                            return $this->sendReply($event, "日付が入力されました！\n次に魚の種類を入力します。");
                         } else {
                             return $this->sendReply($event, "正しい日付を入力してください（例：2024-09-25）。");
                         }
@@ -91,7 +91,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent) {
                             $this->saveData($user, 'fish', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_place']);
-                            return $this->sendReply($event, "魚の種類が入力されました。\n次に産地を入力してください。");
+                            return $this->sendReply($event, "魚の種類が入力されました！\n次に産地を入力します。");
                         } else {
                             return $this->sendReply($event, "魚の種類を入力してください。");
                         }
@@ -100,7 +100,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent) {
                             $this->saveData($user, 'place', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_price']);
-                            return $this->sendReply($event, "産地が入力されました。\n次に仕入単価（円/kg）を入力してください。");
+                            return $this->sendReply($event, "産地が入力されました！\n次に仕入単価（円/kg）を入力します。");
                         } else {
                             return $this->sendReply($event, "産地を入力してください。");
                         }
@@ -109,7 +109,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
                             $this->saveData($user, 'price', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_selling_price']);
-                            return $this->sendReply($event, "仕入単価（円/kg）が入力されました。\n次に販売単価（円/kg）を入力してください。");
+                            return $this->sendReply($event, "仕入単価（円/kg）が入力されました！\n次に販売単価（円/kg）を入力します。");
                         } else {
                             return $this->sendReply($event, "仕入単価（円/kg）を数値で入力してください。");
                         }
@@ -118,7 +118,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
                             $this->saveData($user, 'selling_price', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_quantity_sold']);
-                            return $this->sendReply($event, "販売単価（円/kg）が入力されました。\n次に数量（/kg）を入力してください。");
+                            return $this->sendReply($event, "販売単価（円/kg）が入力されました！\n次に数量（/kg）を入力します。");
                         } else {
                             return $this->sendReply($event, "販売単価（円/kg）を数値で入力してください。");
                         }
@@ -127,9 +127,18 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
                             $this->saveData($user, 'quantity_sold', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_remarks']);
-                            return $this->sendReply($event, "数量（/kg）が入力されました。\n次にメモを入力してください。");
+                            return $this->sendReply($event, "数量（/kg）が入力されました！\n次に消費期限を入力します。");
                         } else {
                             return $this->sendReply($event, "数量（/kg）を数値で入力してください。");
+                        }
+
+                    case 'awaiting_expiry_date':
+                        if ($eventMessage instanceof TextMessageContent && $this->isValidDate($eventMessage->getText())) {
+                            $this->saveData($user, 'expiry_date', $eventMessage->getText());
+                            $userState->update(['state' => 'awaiting_remarks']);
+                            return $this->sendReply($event, "消費期限が入力されました！\n次にメモを入力します。");
+                        } else {
+                            return $this->sendReply($event, "正しい消費期限を入力してください（例：2024-09-25）。");
                         }
 
                     case 'awaiting_remarks':
@@ -137,7 +146,7 @@ class LineBotController extends Controller
                             $this->saveData($user, 'remarks', $eventMessage->getText());
                             // 状態をリセットして、新しいデータ入力ができるようにする
                             $userState->update(['state' => 'awaiting_image']);
-                            return $this->sendReply($event, "すべての入力が完了しました。\n新しいデータを入力するには、再度画像をアップロードしてください。");
+                            return $this->sendReply($event, "お疲れ様です。すべての入力が完了しました！\n新しいデータを入力するには、再度画像をアップロードしてください。");
                         } else {
                             return $this->sendReply($event, "メモを入力してください。");
                         }
