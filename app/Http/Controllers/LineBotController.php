@@ -126,7 +126,7 @@ class LineBotController extends Controller
                     case 'awaiting_quantity_sold':
                         if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
                             $this->saveData($user, 'quantity_sold', $eventMessage->getText());
-                            $userState->update(['state' => 'awaiting_remarks']);
+                            $userState->update(['state' => 'awaiting_expiry_date']);
                             return $this->sendReply($event, "数量（/kg）が入力されました！\n次に消費期限を入力します。");
                         } else {
                             return $this->sendReply($event, "数量（/kg）を数値で入力してください。");
