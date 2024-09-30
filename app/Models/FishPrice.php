@@ -27,6 +27,7 @@ class FishPrice extends Model
         'image_path',
         'delete_flg',   
         'expiry_confirmed', // 追加
+        'notified',// 追加
     ];
 
     /**
@@ -39,6 +40,7 @@ class FishPrice extends Model
         'price' => 'decimal:2',
         'expiry_date' => 'date', // 追加
         'expiry_confirmed' => 'boolean', // 追加
+        'notified' => 'boolean', // 追加
     ];
 
     /**
@@ -105,5 +107,10 @@ class FishPrice extends Model
                     ->where('delete_flg', 0)
                     ->where('expiry_confirmed', false)  // 確認済みでないものだけを取得
                     ->get();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
