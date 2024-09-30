@@ -16,8 +16,7 @@ class CheckExpiryDates extends Command
     {
         $today = Carbon::today();
         $expiredItems = FishPrice::where('expiry_date', '<=', $today)
-                                 ->where('notified', false)
-                                 ->where('expiry_confirmed', false)  // 追加: 未確認の商品のみを対象
+                                 ->where('expiry_confirmed', false)
                                  ->with('user')
                                  ->get();
 
@@ -29,7 +28,6 @@ class CheckExpiryDates extends Command
 
             try {
                 $lineService->sendMessage($item->user->line_id, $message);
-                $item->update(['notified' => true]);
                 $this->info("Notification sent for item ID: {$item->id}");
             } catch (\Exception $e) {
                 $this->error("Failed to send notification for item ID: {$item->id}. Error: {$e->getMessage()}");
