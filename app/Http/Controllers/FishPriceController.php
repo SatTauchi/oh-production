@@ -180,10 +180,18 @@ class FishPriceController extends Controller
 
     public function getExpiryAlerts()
     {
-        $expiredItems = FishPrice::getExpiredItems();
+        $user = Auth::user();
+        $today = Carbon::today();
+
+        $expiredItems = FishPrice::where('user_id', $user->id)
+                                 ->where('expiry_date', '<=', $today)
+                                 ->where('expiry_confirmed', false)
+                                 ->where('delete_flg', 0)
+                                 ->get();
+
         $formattedItems = $expiredItems->map(function ($item) {
-        $discountFactor = mt_rand(105, 110) / 100; // 1.05 から 1.10 のランダムな変数をかけて割引価格を算出
-        $discountPrice = round($item->price * $discountFactor);
+            $discountFactor = mt_rand(105, 110) / 100; // 1.05 から 1.10 のランダムな変数をかけて割引価格を算出
+            $discountPrice = round($item->price * $discountFactor);
 
             return [
                 'id' => $item->id,
@@ -194,9 +202,7 @@ class FishPriceController extends Controller
                 'quantity_sold' => $item->quantity_sold,
             ];
         });
+
         return response()->json($formattedItems);
     }
-
-
-
 }
