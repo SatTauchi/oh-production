@@ -10,6 +10,13 @@
         background-repeat: no-repeat;
         background-position: center;
     }
+
+    #date{
+        -webkit-appearance: none;  /* Safari用 */
+        -moz-appearance: none;     /* Firefox用 */
+        appearance: none;          /* 標準のスタイルを無効化 */
+    }
+    
 </style>
 @endsection
 

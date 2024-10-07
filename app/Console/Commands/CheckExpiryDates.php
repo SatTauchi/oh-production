@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\FishPrice;
+use App\Models\User;
 use App\Services\LineNotificationService;
 use Carbon\Carbon;
 

@@ -2,6 +2,17 @@
 
 @section('title', 'おさかなハぅマっチ？ - データ更新')
 
+@section('additional_styles')
+<style>
+    #date{
+        -webkit-appearance: none;  /* Safari用 */
+        -moz-appearance: none;     /* Firefox用 */
+        appearance: none;          /* 標準のスタイルを無効化 */
+    }
+    
+</style>
+@endsection
+
 @section('content')
     <!-- フラッシュメッセージ表示領域 -->
     <div id="flash-message" class="hidden mb-4 p-4 rounded-lg"></div>

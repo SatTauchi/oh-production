@@ -23,13 +23,15 @@
         width: 100%;
         flex-grow: 1;
     }
+    
     .fish-select-container {
-        width: 200px;
+    width: 200px;
+    position: relative;
     }
 
     .fish-select {
         width: 100%;
-        padding: 0.5rem;
+        padding: 0.5rem 2rem 0.5rem 0.5rem; /* 右側のパディングを増やして矢印のスペースを確保 */
         border: 2px solid #3490dc;
         color: #3490dc;
         font-weight: bold;
@@ -37,6 +39,21 @@
         transition: all 0.3s;
         background-color: white;
         font-size: 16px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        text-align: center; /* テキストを中央揃えに */
+        text-align-last: center; /* Firefox用 */
+    }
+
+    .fish-select-container::after {
+        content: '\25BC'; /* 下向き矢印 */
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        pointer-events: none; /* クリックイベントを通過させる */
+        color: #3490dc;
     }
 
     .fish-select:hover {
@@ -48,16 +65,16 @@
         outline: none;
         box-shadow: 0 0 0 3px rgba(52, 144, 220, 0.5);
     }
+    
     @media (max-width: 768px) {
         .fish-select-container {
             width: 150px;
         }
-
         .fish-select {
-            padding: 0.3rem;
-            font-size: 14px;
+                padding: 0.3rem 1.5rem 0.3rem 0.3rem;
+                font-size: 14px;
+            }
         }
-    }
 
     @media (max-width: 480px) {
         .fish-select-container {
@@ -65,10 +82,11 @@
         }
 
         .fish-select {
-            padding: 0.2rem;
+            padding: 0.2rem 1.5rem 0.2rem 0.2rem;
             font-size: 12px;
         }
     }
+
     .data-card {
         display: flex;
         flex-direction: column;

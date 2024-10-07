@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\FishPriceTrendController;
 use App\Http\Controllers\CsvImportController;  // 追加 CSVインポート用コントローラー
 use App\Http\Controllers\LineBotController; // 追加
+use App\Http\Controllers\SettingController; // 追加
 
 Route::post('webhook/linebot', [LineBotController::class, 'reply']);
 
@@ -60,6 +61,14 @@ Route::middleware(['auth'])->group(function () {
                     ->middleware('guest')
                     ->name('password.email');
 
+});
+
+
+// 管理者用のルート
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::patch('/settings/toggle-life/{user}', [SettingController::class, 'toggleLife'])->name('settings.toggle-life');
+    Route::patch('/settings/toggle-admin/{user}', [SettingController::class, 'toggleAdmin'])->name('settings.toggle-admin');
 });
 
 // // 本関連のルート

@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: osakana_app
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - osakana
+
+  web:
+    image: nginx:alpine
+    container_name: osakana_web
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/certs:/etc/ssl/certs  # 証明書のボリュームを追加
+    networks:
+      - osakana
+
+  db:
+    image: mysql:8.0
+    container_name: osakana_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: osakana
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - osakana
+    ports:
+      - "3306:3306"
+
+networks:
+  osakana:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+

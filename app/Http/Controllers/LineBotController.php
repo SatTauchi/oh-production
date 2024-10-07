@@ -72,9 +72,9 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof ImageMessageContent) {
                             $responseMessage = $this->handleImageUpload($messagingApi, $event, $user);
                             $userState->update(['state' => 'awaiting_date']);
-                            return $this->sendReply($event, $responseMessage . "\n次に日付を入力してください（例：20240925 または 2024-09-25）。");
+                            return $this->sendReply($event, $responseMessage . "\n次に仕入れ日を入力ましょう（例：20240925 または 2024-09-25）。");
                         } else {
-                            return $this->sendReply($event, "画像をアップロードしてください。");
+                            return $this->sendReply($event, "データの入力をしましょう。\n商品の画像をアップロードしてください！");
                         }
 
                     case 'awaiting_date':
@@ -82,16 +82,16 @@ class LineBotController extends Controller
                             $date = $this->formatDate($eventMessage->getText());
                             $this->saveData($user, 'date', $date);
                             $userState->update(['state' => 'awaiting_fish']);
-                            return $this->sendReply($event, "日付が入力されました。日付: {$date}\n次に魚の種類を入力してください。");
+                            return $this->sendReply($event, "仕入れ日が入力されました！日付: {$date}\n次に魚の種類を入力しましょう。");
                         } else {
-                            return $this->sendReply($event, "正しい日付を入力してください（例：20240925 または 2024-09-25）。");
+                            return $this->sendReply($event, "正しい形式で日付を入力してください（例：20240925 または 2024-09-25）。");
                         }
 
                     case 'awaiting_fish':
                         if ($eventMessage instanceof TextMessageContent) {
                             $this->saveData($user, 'fish', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_place']);
-                            return $this->sendReply($event, "魚の種類が入力されました。\n次に産地を入力してください。");
+                            return $this->sendReply($event, "魚の種類が入力されました！\n次に産地を入力しましょう。");
                         } else {
                             return $this->sendReply($event, "魚の種類を入力してください。");
                         }
@@ -100,7 +100,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent) {
                             $this->saveData($user, 'place', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_price']);
-                            return $this->sendReply($event, "産地が入力されました。\n次に仕入単価（円/kg）を入力してください。");
+                            return $this->sendReply($event, "産地が入力されました！\n次に仕入単価（円/kg）を入力してみましょう。");
                         } else {
                             return $this->sendReply($event, "産地を入力してください。");
                         }
@@ -109,7 +109,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
                             $this->saveData($user, 'price', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_selling_price']);
-                            return $this->sendReply($event, "仕入単価（円/kg）が入力されました。\n次に販売単価（円/kg）を入力してください。");
+                            return $this->sendReply($event, "仕入単価（円/kg）が入力されました！\n次に販売単価（円/kg）を入力してみましょう。");
                         } else {
                             return $this->sendReply($event, "仕入単価（円/kg）を数値で入力してください。");
                         }
@@ -118,7 +118,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
                             $this->saveData($user, 'selling_price', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_quantity_sold']);
-                            return $this->sendReply($event, "販売単価（円/kg）が入力されました。\n次に数量（kg）を入力してください。");
+                            return $this->sendReply($event, "販売単価（円/kg）が入力されました！\n次に数量（kg）を入力してみましょう。");
                         } else {
                             return $this->sendReply($event, "販売単価（円/kg）を数値で入力してください。");
                         }
@@ -127,7 +127,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent && is_numeric($eventMessage->getText())) {
                             $this->saveData($user, 'quantity_sold', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_expiry_date']);
-                            return $this->sendReply($event, "数量（kg）が入力されました。\n次に消費期限を入力してください（例：20240925 または 2024-09-25）。");
+                            return $this->sendReply($event, "数量（kg）が入力されました！\n次に消費期限を入力してみましょう（例：20240925 または 2024-09-25）。");
                         } else {
                             return $this->sendReply($event, "数量（kg）を数値で入力してください。");
                         }
@@ -137,7 +137,7 @@ class LineBotController extends Controller
                             $date = $this->formatDate($eventMessage->getText());
                             $this->saveData($user, 'expiry_date', $date);
                             $userState->update(['state' => 'awaiting_remarks']);
-                            return $this->sendReply($event, "消費期限が入力されました。日付: {$date}\n次にメモを入力してください。");
+                            return $this->sendReply($event, "消費期限が入力されました！日付: {$date}\n次にメモを入力してみましょう。");
                         } else {
                             return $this->sendReply($event, "正しい消費期限を入力してください（例：20240925 または 2024-09-25）。");
                         }
@@ -146,7 +146,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof TextMessageContent) {
                             $this->saveData($user, 'remarks', $eventMessage->getText());
                             $userState->update(['state' => 'awaiting_image']);
-                            return $this->sendReply($event, "すべての入力が完了しました。\n新しいデータを入力するには、再度画像をアップロードしてください。");
+                            return $this->sendReply($event, "お疲れ様でした！すべての入力が完了しました！\n新しいデータを入力するには、再度画像をアップロードしてください。");
                         } else {
                             return $this->sendReply($event, "メモを入力してください。");
                         }
@@ -222,6 +222,32 @@ class LineBotController extends Controller
         return $text;
     }
 
+    <?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use LINE\Clients\MessagingApi\Api\MessagingApiApi;
+use LINE\Clients\MessagingApi\Model\TextMessage;
+use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
+use LINE\Webhook\Model\MessageEvent;
+use LINE\Webhook\Model\TextMessageContent;
+use LINE\Webhook\Model\ImageMessageContent;
+use LINE\Parser\EventRequestParser;
+use LINE\Webhook\Model\UserSource;
+use App\Models\User;
+use App\Models\FishPrice;
+use App\Models\UserState;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
+class LineBotController extends Controller
+{
+    // ... (previous code remains unchanged)
+
     private function handleImageUpload(MessagingApiApi $messagingApi, MessageEvent $event, User $user)
     {
         $messageId = $event->getMessage()->getId();
@@ -234,6 +260,15 @@ class LineBotController extends Controller
                     'Authorization' => "Bearer $channelToken",
                 ],
             ]);
+
+            // Check the Content-Length header to get the image size
+            $contentLength = $response->getHeader('Content-Length');
+            $imageSize = isset($contentLength[0]) ? intval($contentLength[0]) : 0;
+
+            // Check if the image size exceeds 2MB (2 * 1024 * 1024 bytes)
+            if ($imageSize > 2 * 1024 * 1024) {
+                return "画像サイズが大きすぎます。2MB以下の画像をアップロードしてください。";
+            }
 
             $imageContent = $response->getBody()->getContents();
 
@@ -259,7 +294,7 @@ class LineBotController extends Controller
 
             if ($validator->fails()) {
                 unlink($tempPath);
-                return "画像のアップロードに失敗しました。サイズは2MB以下である必要があります。";
+                return "画像のアップロードに失敗しました。正しい画像形式であることを確認してください。";
             }
 
             $path = Storage::disk('public')->putFile('fish_images', $tempFile);
@@ -274,7 +309,7 @@ class LineBotController extends Controller
             ]);
             $fishPrice->save();
 
-            return "画像が正常にアップロードされました。";
+            return "画像が正常にアップロードされました！";
         } catch (\Exception $e) {
             Log::error('Error retrieving image content: ' . $e->getMessage());
             return "画像のアップロードに失敗しました。";

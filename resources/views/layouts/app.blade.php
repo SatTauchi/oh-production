@@ -104,7 +104,7 @@
                     <i class="fas fa-database mr-1"></i> データ
                 </a>
                 @if(Auth::user()->admin_flg == 1)
-                    <a href="#" class="nav-item text-white opacity-80 hover:opacity-100 transition-opacity duration-300">
+                    <a href="{{ route('settings.index') }}" class="nav-item text-white opacity-80 hover:opacity-100 transition-opacity duration-300">
                         <i class="fas fa-cog mr-1"></i> 設定
                     </a>
                 @endif
