@@ -8,6 +8,13 @@ services:
       - ./:/var/www
     networks:
       - osakana
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    command: >
+      sh -c "composer install &&
+             php artisan key:generate --force &&
+             php artisan config:cache &&
+             php-fpm"
 
   web:
     image: nginx:alpine
@@ -18,7 +25,7 @@ services:
     volumes:
       - ./:/var/www
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./docker/nginx/certs:/etc/ssl/certs  # 証明書のボリュームを追加
+      - ./docker/nginx/certs:/etc/ssl/certs
     networks:
       - osakana
 
@@ -44,4 +51,3 @@ networks:
 volumes:
   dbdata:
     driver: local
-

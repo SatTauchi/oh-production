@@ -1,32 +1,20 @@
-# ベースイメージとしてPHP 8.2を使用
 FROM php:8.2-fpm
 
-# システムパッケージと必要なPHP拡張をインストール
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    libzip-dev \
-    unzip \
-    git \
-    curl \
-    && docker-php-ext-install pdo pdo_mysql zip gd
+# Install dependencies
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git unzip
 
-# Composerのインストール
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
 
-# 作業ディレクトリの設定
+# Set working directory
 WORKDIR /var/www
 
-# ファイルをコピー
+# Copy existing application directory contents
 COPY . /var/www
 
-# ディレクトリ権限の設定
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www
+# Copy existing application directory permissions
+COPY --chown=www-data:www-data . /var/www
 
+# Expose port 9000 and start php-fpm server
 EXPOSE 9000
-
 CMD ["php-fpm"]
-

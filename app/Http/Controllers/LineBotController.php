@@ -72,7 +72,7 @@ class LineBotController extends Controller
                         if ($eventMessage instanceof ImageMessageContent) {
                             $responseMessage = $this->handleImageUpload($messagingApi, $event, $user);
                             $userState->update(['state' => 'awaiting_date']);
-                            return $this->sendReply($event, $responseMessage . "\n次に仕入れ日を入力ましょう（例：20240925 または 2024-09-25）。");
+                            return $this->sendReply($event, $responseMessage . "\n次に仕入れ日を入力しましょう（例：20240925 または 2024-09-25）。");
                         } else {
                             return $this->sendReply($event, "データの入力をしましょう。\n商品の画像をアップロードしてください！");
                         }
@@ -221,32 +221,6 @@ class LineBotController extends Controller
         }
         return $text;
     }
-
-    <?php
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use GuzzleHttp\Client;
-use LINE\Clients\MessagingApi\Api\MessagingApiApi;
-use LINE\Clients\MessagingApi\Model\TextMessage;
-use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
-use LINE\Webhook\Model\MessageEvent;
-use LINE\Webhook\Model\TextMessageContent;
-use LINE\Webhook\Model\ImageMessageContent;
-use LINE\Parser\EventRequestParser;
-use LINE\Webhook\Model\UserSource;
-use App\Models\User;
-use App\Models\FishPrice;
-use App\Models\UserState;
-use Exception;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
-
-class LineBotController extends Controller
-{
-    // ... (previous code remains unchanged)
 
     private function handleImageUpload(MessagingApiApi $messagingApi, MessageEvent $event, User $user)
     {
