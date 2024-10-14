@@ -9,6 +9,12 @@
         -moz-appearance: none;     /* Firefox用 */
         appearance: none;          /* 標準のスタイルを無効化 */
     }
+
+    #expiry_date{
+        -webkit-appearance: none;  /* Safari用 */
+        -moz-appearance: none;     /* Firefox用 */
+        appearance: none;          /* 標準のスタイルを無効化 */
+    }
     
 </style>
 @endsection
@@ -24,7 +30,7 @@
         <input type="hidden" name="id" value="{{ $result['id'] }}">
         <div class="mb-6">
             <label for="date" class="block mb-2 font-bold text-gray-700">日付</label>
-            <input id="date" class="w-full p-3 border-2 border-blue-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-300" type="date" name="date" value="{{ $result['date'] }}" required>
+            <input id="date" class="w-full p-3 border-2 border-blue-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-300 bg-white" type="date" name="date" value="{{ $result['date'] }}" required>
         </div>
         <div class="mb-6">
             <label for="fish" class="block mb-2 font-bold text-gray-700">魚種</label>
@@ -58,7 +64,7 @@
         <!-- 消費期限フィールドを追加 -->
         <div class="mb-6">
             <label for="expiry_date" class="block mb-2 font-bold text-gray-700">消費期限</label>
-            <input id="expiry_date" class="w-full p-3 border-2 border-blue-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-300" type="date" name="expiry_date" value="{{ $result['expiry_date'] }}" required>
+            <input id="expiry_date" class="w-full p-3 border-2 border-blue-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition duration-300 bg-white" type="date" name="expiry_date" value="{{ $result['expiry_date'] }}" required>
         </div>
         <div class="mb-6">
             <label for="remarks" class="block mb-2 font-bold text-gray-700">メモ</label>

@@ -16,6 +16,12 @@
         -moz-appearance: none;     /* Firefox用 */
         appearance: none;          /* 標準のスタイルを無効化 */
     }
+
+    #expiry_date{
+        -webkit-appearance: none;  /* Safari用 */
+        -moz-appearance: none;     /* Firefox用 */
+        appearance: none;          /* 標準のスタイルを無効化 */
+    }
     
 </style>
 @endsection
@@ -27,7 +33,7 @@
         <!-- 既存のフィールド -->
         <div>
             <label for="date" class="block mb-2 font-bold">日付 *</label>
-            <input id="date" class="w-full p-3 border-2 border-input-border rounded-lg focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-300" type="date" name="date" required>
+            <input id="date" class="w-full p-3 border-2 border-input-border rounded-lg focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-300 bg-white" type="date" name="date" required>
         </div>
         <div>
             <label for="fish" class="block mb-2 font-bold">魚種 *</label>
@@ -65,7 +71,7 @@
         <!-- 新しいフィールド：消費期限 -->
         <div>
             <label for="expiry_date" class="block mb-2 font-bold">消費期限 *</label>
-            <input id="expiry_date" class="w-full p-3 border-2 border-input-border rounded-lg focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-300" type="date" name="expiry_date" required>
+            <input id="expiry_date" class="w-full p-3 border-2 border-input-border rounded-lg focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-300 bg-white" type="date" name="expiry_date" required>
         </div>
         <!-- 既存のフィールド（続き） -->
         <div>
