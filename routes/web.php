@@ -12,6 +12,8 @@ use App\Http\Controllers\FishPriceTrendController;
 use App\Http\Controllers\CsvImportController;  // 追加 CSVインポート用コントローラー
 use App\Http\Controllers\LineBotController; // 追加
 use App\Http\Controllers\SettingController; // 追加
+use App\Http\Controllers\CommentController; // 追加
+
 
 Route::post('webhook/linebot', [LineBotController::class, 'reply']);
 
@@ -19,6 +21,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/', [BookController::class,'index'])->middleware(['auth'])->name('dashboard');
     Route::get('/dashboard', [BookController::class,'index'])->middleware(['auth'])->name('dashboard');
+
+    // コメント関連のルート
+    Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     
     // 入力画面
     Route::get('/input', [FishPriceController::class, 'create'])->name('fish_price.create');

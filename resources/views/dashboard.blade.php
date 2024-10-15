@@ -174,6 +174,16 @@
             <ul class="space-y-4" id="recent-comments">
                 <!-- 新着コメントがここに動的に挿入されます -->
             </ul>
+            <form action="{{ route('comments.store') }}" method="POST" class="comment-form">
+                @csrf
+                <textarea name="content" class="w-full p-2 border border-gray-300 rounded" rows="3" placeholder="コメントを入力してください" required></textarea>
+                <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">投稿</button>
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+            </form>
         </div>
     </div>
 
@@ -193,6 +203,10 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/comments.js') }}"></script>
+@endpush
 
 @section('additional_scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -569,22 +583,89 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchRecentComments() {
-        fetch(`${API_BASE_URL}/api/recent-comments`)
-            .then(response => response.json())
-            .then(comments => {
-                const commentsList = document.getElementById('recent-comments');
-                comments.slice(0, 5).forEach(comment => {
-                    const li = document.createElement('li');
-                    li.className = 'pb-4 border-b border-gray-200 last:border-b-0';
-                    li.innerHTML = `
-                        <p class="text-sm text-gray-600">${comment.content}</p>
-                        <p class="text-xs text-gray-400 mt-1">投稿者: ${comment.user} - ${comment.date}</p>
-                    `;
-                    commentsList.appendChild(li);
-                });
+        fetch('/comments', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(comments => {
+            const commentsList = document.getElementById('recent-comments');
+            commentsList.innerHTML = '';
+            comments.forEach(comment => {
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                li.innerHTML = `
+                    <p class="comment-content">${escapeHtml(comment.content)}</p>
+                    <p class="comment-meta">投稿者: ${escapeHtml(comment.user.name)} - ${new Date(comment.created_at).toLocaleString('ja-JP')}</p>
+                `;
+                commentsList.appendChild(li);
             });
+        })
+        .catch(error => {
+            console.error('Error fetching comments:', error);
+            document.getElementById('recent-comments').innerHTML = '<p class="text-red-500">コメントの取得に失敗しました。</p>';
+        });
     }
 
+    function postComment(content) {
+        fetch('/comments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ content: content })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(comment => {
+            console.log('Comment posted successfully:', comment);
+            fetchRecentComments();
+            document.getElementById('comment-content').value = '';
+        })
+        .catch(error => {
+            console.error('Error posting comment:', error);
+            alert('コメントの投稿に失敗しました。');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchRecentComments();
+
+        const commentForm = document.getElementById('comment-form');
+        commentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const content = document.getElementById('comment-content').value.trim();
+            if (content) {
+                postComment(content);
+            }
+        });
+    });
+
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+}
     function fetchExpiryAlerts() {
         fetch(`${API_BASE_URL}/api/expiry-alerts`)
             .then(response => response.json())

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Models\Comment;
 
 class FishPriceTrendController extends Controller
 {
@@ -120,6 +121,18 @@ class FishPriceTrendController extends Controller
         ]);
     }
 
+        public function index()
+    {
+        $comments = Comment::with('user')
+            ->whereHas('user', function ($query) {
+                $query->where('branch_id', auth()->user()->branch_id);
+            })
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('dashboard', compact('comments'));
+    }
 
     private function getRandomColor()
     {

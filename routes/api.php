@@ -6,6 +6,7 @@ use App\Http\Controllers\FishPriceController; // Add
 use App\Http\Controllers\FishPriceTrendController;
 
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
