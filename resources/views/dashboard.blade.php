@@ -147,7 +147,7 @@
 
 @section('content')
     <h2 class="text-2xl font-bold mb-6 text-primary relative pb-3 after:content-[''] after:absolute 
-    after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-blue-500 after:rounded-full">ダッシュボード　（魚芳　中野支部）</h2>
+    after:left-0 after:bottom-0 after:w-12 after:h-1 after:bg-blue-500 after:rounded-full">ダッシュボード</h2>
     <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
         <div class="dashboard-card-pricetrend bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out">
             <div class="flex justify-between items-center mb-4">
@@ -170,7 +170,7 @@
             </div>
         </div>
         <div class="bg-white rounded-3xl shadow-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
-            <h3 class="text-xl font-bold mb-4 text-primary">中野支部　価格情報</h3>
+            <h3 class="text-xl font-bold mb-4 text-primary">共有情報</h3>
             <ul class="space-y-4" id="recent-comments">
                 <!-- 新着コメントがここに動的に挿入されます -->
             </ul>
