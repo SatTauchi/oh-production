@@ -15,16 +15,14 @@
         -webkit-appearance: none;  /* Safari用 */
         -moz-appearance: none;     /* Firefox用 */
         appearance: none;          /* 標準のスタイルを無効化 */
-        height: 24px;
     }
 
     #expiry_date{
         -webkit-appearance: none;  /* Safari用 */
         -moz-appearance: none;     /* Firefox用 */
         appearance: none;          /* 標準のスタイルを無効化 */
-        height: 24px;
     }
-
+    
 </style>
 @endsection
 
