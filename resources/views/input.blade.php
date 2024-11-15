@@ -15,28 +15,14 @@
         -webkit-appearance: none;  /* Safari用 */
         -moz-appearance: none;     /* Firefox用 */
         appearance: none;          /* 標準のスタイルを無効化 */
+        height: 24px;
     }
 
     #expiry_date{
         -webkit-appearance: none;  /* Safari用 */
         -moz-appearance: none;     /* Firefox用 */
         appearance: none;          /* 標準のスタイルを無効化 */
-    }
-    
-    /* 共通の高さ設定 */
-    .input-select-style {
-        height: 24px; /* 任意の高さ */
-        padding: 0 1rem; /* 内側余白 */
-        line-height: 1.5; /* テキストの縦位置調整 */
-        border: 2px solid #e5e7eb; /* ボーダー */
-        border-radius: 0.5rem; /* 丸み */
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-    /* フォーカス時のスタイル */
-    .input-select-style:focus {
-        border-color: #3b82f6; /* フォーカス時の色 */
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        height: 24px;
     }
 
 </style>
@@ -49,7 +35,7 @@
         <!-- 既存のフィールド -->
         <div>
             <label for="date" class="block mb-2 font-bold">日付 *</label>
-            <input id="date" class="input-select-style w-full bg-white appearance-none" type="date" name="date" required>
+            <input id="date" class="w-full p-3 border-2 border-input-border rounded-lg focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-300 appearance-none bg-white" type="date" name="date" required>
         </div>
         <div>
             <label for="fish" class="block mb-2 font-bold">魚種 *</label>
